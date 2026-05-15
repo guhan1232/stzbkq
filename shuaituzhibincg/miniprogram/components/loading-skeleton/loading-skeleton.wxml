@@ -1,0 +1,52 @@
+<view class="skeleton-container">
+  <!-- 卡片骨架屏 -->
+  <block wx:if="{{type === 'card'}}">
+    <view class="skeleton-card" wx:for="{{items}}" wx:key="*this">
+      <view class="skeleton-avatar"></view>
+      <view class="skeleton-content">
+        <view class="skeleton-line short"></view>
+        <view class="skeleton-line"></view>
+        <view class="skeleton-line medium"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 列表骨架屏 -->
+  <block wx:elif="{{type === 'list'}}">
+    <view class="skeleton-list-item" wx:for="{{items}}" wx:key="*this">
+      <view class="skeleton-image"></view>
+      <view class="skeleton-text-group">
+        <view class="skeleton-line short"></view>
+        <view class="skeleton-line"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 统计卡片骨架屏 -->
+  <block wx:elif="{{type === 'stat'}}">
+    <view class="skeleton-stat-grid">
+      <view class="skeleton-stat-card" wx:for="{{items}}" wx:key="*this">
+        <view class="skeleton-circle"></view>
+        <view class="skeleton-line short"></view>
+        <view class="skeleton-line medium"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 个人资料骨架屏 -->
+  <block wx:elif="{{type === 'profile'}}">
+    <view class="skeleton-profile">
+      <view class="skeleton-large-avatar"></view>
+      <view class="skeleton-profile-info">
+        <view class="skeleton-line medium"></view>
+        <view class="skeleton-line short"></view>
+      </view>
+      <view class="skeleton-profile-stats">
+        <view class="skeleton-stat-item" wx:for="{{[0,1,2]}}" wx:key="*this">
+          <view class="skeleton-circle small"></view>
+          <view class="skeleton-line very-short"></view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

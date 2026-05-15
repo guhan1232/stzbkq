@@ -1,0 +1,213 @@
+<!--pages/ai-data-export/ai-data-export.wxml-->
+<view class="container">
+  <van-nav-bar title="AI数据导出" left-arrow bind:click-left="onBack" />
+  
+  <view class="content">
+    <!-- 说明卡片 -->
+    <view class="info-card">
+      <view class="info-title">📊 AI训练数据导出</view>
+      <view class="info-text">
+        导出纯净的队伍数据，用于AI模型训练或数据分析。数据包含完整的队伍配置、武将信息、技能搭配等。
+      </view>
+    </view>
+
+    <!-- 导出选项 -->
+    <van-cell-group inset title="数据范围">
+      <van-radio-group value="{{dataType}}" bind:change="onDataTypeChange">
+        <van-cell clickable bind:click="onDataTypeChange" data-value="all">
+          <view slot="title">全部队伍数据</view>
+          <van-radio name="all" slot="right-icon" />
+        </van-cell>
+        
+        <van-cell clickable bind:click="onDataTypeChange" data-value="player">
+          <view slot="title">指定玩家队伍</view>
+          <van-radio name="player" slot="right-icon" />
+        </van-cell>
+        
+        <van-cell clickable bind:click="onDataTypeChange" data-value="union">
+          <view slot="title">指定同盟队伍</view>
+          <van-radio name="union" slot="right-icon" />
+        </van-cell>
+        
+        <van-cell clickable bind:click="onDataTypeChange" data-value="statistics">
+          <view slot="title">统计数据</view>
+          <van-radio name="statistics" slot="right-icon" />
+        </van-cell>
+        
+        <van-cell clickable bind:click="onDataTypeChange" data-value="full">
+          <view slot="title">完整训练数据集</view>
+          <van-radio name="full" slot="right-icon" />
+        </van-cell>
+      </van-radio-group>
+    </van-cell-group>
+
+    <!-- 筛选条件 -->
+    <van-cell-group inset wx:if="{{dataType === 'player' || dataType === 'union'}}">
+      <van-field
+        wx:if="{{dataType === 'player'}}"
+        value="{{filterValue}}"
+        label="玩家名称"
+        placeholder="请输入玩家名称"
+        bind:change="onFilterValueChange"
+        clearable
+      />
+      
+      <van-field
+        wx:if="{{dataType === 'union'}}"
+        value="{{filterValue}}"
+        label="同盟名称"
+        placeholder="请输入同盟名称"
+        bind:change="onFilterValueChange"
+        clearable
+      />
+    </van-cell-group>
+
+    <!-- 导出格式 -->
+    <van-cell-group inset title="导出格式">
+      <van-radio-group value="{{exportFormat}}" bind:change="onFormatChange">
+        <van-cell clickable bind:click="onFormatChange" data-value="json">
+          <view slot="title">
+            <view>JSON格式</view>
+            <view class="format-desc">适合AI训练，结构化数据</view>
+          </view>
+          <van-radio name="json" slot="right-icon" />
+        </van-cell>
+        
+        <van-cell clickable bind:click="onFormatChange" data-value="csv">
+          <view slot="title">
+            <view>CSV格式</view>
+            <view class="format-desc">适合Excel分析，表格形式</view>
+          </view>
+          <van-radio name="csv" slot="right-icon" />
+        </van-cell>
+      </van-radio-group>
+    </van-cell-group>
+
+    <!-- 高级选项 -->
+    <van-cell-group inset title="高级选项">
+      <van-cell title="包含武将配置" center>
+        <van-switch 
+          checked="{{includeHeroConfig}}" 
+          bind:change="onIncludeHeroConfigChange"
+          active-color="#4CAF50"
+        />
+      </van-cell>
+      
+      <van-cell title="包含技能配置" center>
+        <van-switch 
+          checked="{{includeSkillConfig}}" 
+          bind:change="onIncludeSkillConfigChange"
+          active-color="#4CAF50"
+        />
+      </van-cell>
+      
+      <van-field
+        value="{{pageSize}}"
+        label="每页数量"
+        type="number"
+        placeholder="100"
+        bind:change="onPageSizeChange"
+      />
+    </van-cell-group>
+
+    <!-- 数据统计 -->
+    <view class="stats-card" wx:if="{{stats}}">
+      <view class="stats-title">📈 数据统计</view>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <view class="stat-value">{{stats.totalTeams}}</view>
+          <view class="stat-label">总队伍数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.totalPlayers}}</view>
+          <view class="stat-label">玩家数量</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.totalUnions}}</view>
+          <view class="stat-label">同盟数量</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.dataSize}}</view>
+          <view class="stat-label">数据大小</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="button-group">
+      <van-button 
+        type="primary" 
+        block 
+        round
+        icon="down"
+        loading="{{exporting}}"
+        bind:click="exportData"
+      >
+        导出数据
+      </van-button>
+      
+      <van-button 
+        type="default" 
+        block 
+        round
+        icon="eye-o"
+        bind:click="previewData"
+      >
+        预览数据
+      </van-button>
+      
+      <van-button 
+        type="default" 
+        block 
+        round
+        icon="replay"
+        bind:click="resetOptions"
+      >
+        重置选项
+      </van-button>
+    </view>
+
+    <!-- 使用说明 -->
+    <view class="usage-card">
+      <view class="usage-title">💡 使用说明</view>
+      <view class="usage-list">
+        <view class="usage-item">1. 选择需要导出的数据范围</view>
+        <view class="usage-item">2. 选择导出格式（推荐JSON）</view>
+        <view class="usage-item">3. 点击"预览数据"查看样例</view>
+        <view class="usage-item">4. 点击"导出数据"下载文件</view>
+        <view class="usage-item">5. 将数据用于AI训练或分析</view>
+      </view>
+    </view>
+
+    <!-- 数据示例 -->
+    <view class="example-card">
+      <view class="example-title">📝 数据示例</view>
+      <view class="example-code">
+        <text>{\n</text>
+        <text>  "teams": [\n</text>
+        <text>    {\n</text>
+        <text>      "player_name": "张三",\n</text>
+        <text>      "union_name": "率土有米",\n</text>
+        <text>      "heroes": ["关羽", "张飞", "赵云"],\n</text>
+        <text>      "skills": [...],\n</text>
+        <text>      "position": {"x": 100, "y": 200}\n</text>
+        <text>    }\n</text>
+        <text>  ]\n</text>
+        <text>}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预览弹窗 -->
+  <van-popup show="{{showPreview}}" position="bottom" round>
+    <view class="preview-container">
+      <view class="preview-header">
+        <text class="preview-title">数据预览</text>
+        <van-icon name="cross" bind:click="closePreview" />
+      </view>
+      <scroll-view class="preview-content" scroll-y>
+        <pre>{{previewData}}</pre>
+      </scroll-view>
+    </view>
+  </van-popup>
+</view>

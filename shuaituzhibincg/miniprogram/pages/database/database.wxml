@@ -1,0 +1,66 @@
+<!-- 数据库选择页面 - 清新绿色风格 -->
+<view class="page-container">
+  <!-- 顶部渐变绿色头部 -->
+  <view class="header-section">
+    <text class="header-title">选择区服</text>
+    <text class="header-desc">请选择要操作的区服</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 数据库列表 -->
+  <view wx:elif="{{databases.length > 0}}" class="database-list">
+    <view class="list-header">
+      <text class="list-title">可用区服</text>
+      <text class="list-count">{{databases.length}}个</text>
+    </view>
+
+    <view
+      wx:for="{{databases}}"
+      wx:key="id"
+      class="database-card {{item.id === selectedId ? 'selected' : ''}}"
+      data-id="{{item.id}}"
+      data-name="{{item.server_name}}"
+      data-fullname="{{item.full_name}}"
+      data-alliance="{{item.alliance_name}}"
+      data-server="{{item.server}}"
+      data-state="{{item.state}}"
+      bindtap="onSelectDatabase"
+    >
+      <view class="card-left">
+        <view class="card-icon">
+          <text>📊</text>
+        </view>
+        <view class="card-info">
+          <text class="card-name">{{item.server_name}}</text>
+          <text class="card-alliance">{{item.state}} · {{item.alliance_name || item.name}}</text>
+        </view>
+      </view>
+      <view class="card-right">
+        <view wx:if="{{item.id === selectedId}}" class="status-badge active">
+          <text>✓ 当前</text>
+        </view>
+        <view wx:else class="status-badge">
+          <text>切换</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态/错误状态 -->
+  <view wx:else class="empty-container">
+    <text class="empty-icon">{{loadError ? '⚠️' : '📭'}}</text>
+    <text class="empty-title">{{loadError ? '加载失败' : '暂无区服'}}</text>
+    <text class="empty-desc">{{errorMsg || '没有可用的区服，请联系管理员'}}</text>
+    <button class="refresh-btn" bindtap="loadDatabases">重新加载</button>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+</view>

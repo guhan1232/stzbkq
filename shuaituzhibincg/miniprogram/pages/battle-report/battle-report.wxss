@@ -1,0 +1,143 @@
+.page-container {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  padding: 16px;
+  box-sizing: border-box;
+  padding-bottom: 80px;
+}
+
+.search-box {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: transparent;
+  padding: 16rpx;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.padding-lr {
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+}
+
+.bg-white {
+  background-color: var(--bg-card);
+}
+
+.text-sm {
+  font-size: 24rpx;
+}
+
+.text-gray {
+  color: var(--text-tertiary);
+}
+
+.text-theme {
+  color: var(--primary-500);
+}
+
+.margin-left-xs {
+  margin-left: 8rpx;
+}
+
+.cu-form-group {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 24rpx 20rpx;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.cu-form-group .title {
+  color: var(--text-primary);
+  font-size: 28rpx;
+  min-width: 120rpx;
+}
+
+.cu-form-group input {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: 28rpx;
+}
+
+.cu-card.case {
+  margin: 0;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12rpx;
+  box-shadow: var(--shadow-soft);
+}
+
+.cu-card.case .cu-item {
+  padding: 30rpx;
+}
+
+.text-bold {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.text-cut {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.margin-top-xs {
+  margin-top: 8rpx;
+}
+
+.bg-gray {
+  background-color: var(--bg-secondary);
+}
+
+.sm {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+}
+
+.margin-lr {
+  margin-left: 16rpx;
+  margin-right: 16rpx;
+}
+
+.margin-right-xs {
+  margin-right: 8rpx;
+}
+
+.radius {
+  border-radius: var(--radius-md);
+}
+
+.padding-right {
+  padding-right: 16rpx;
+}
+
+.padding-left {
+  padding-left: 16rpx;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.cu-load.loading,
+.cu-load.over {
+  padding: 30rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+.cu-load.over::after {
+  content: "没有更多了";
+}

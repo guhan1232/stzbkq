@@ -1,0 +1,24 @@
+[Unit]
+Description=StzbHelper - 率土之滨助手服务
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/stzbhelper
+ExecStart=/opt/stzbhelper/stzbhelper-linux-amd64
+Restart=on-failure
+RestartSec=5s
+
+# 环境变量（可选，也可以使用.env文件）
+# Environment=DB_TYPE=mysql
+# Environment=DB_HOST=127.0.0.1
+# Environment=DB_PORT=3306
+# Environment=DB_USER=root
+# Environment=DB_PASSWORD=your_password
+# Environment=DB_NAME=stzbhelper
+# Environment=SERVER_PORT=9527
+# Environment=JWT_SECRET=your-secret-key
+
+[Install]
+WantedBy=multi-user.target

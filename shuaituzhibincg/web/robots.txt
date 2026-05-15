@@ -1,0 +1,4 @@
+# robots.txt
+# 默认禁止所有爬虫访问
+User-agent: *
+Disallow: /

@@ -1,0 +1,8 @@
+{
+  "usingComponents": {},
+  "navigationBarBackgroundColor": "#0A0E1A",
+  "navigationBarTextStyle": "white",
+  "navigationBarTitleText": "战报统计",
+  "backgroundColor": "#f5f5f7",
+  "enablePullDownRefresh": true
+}

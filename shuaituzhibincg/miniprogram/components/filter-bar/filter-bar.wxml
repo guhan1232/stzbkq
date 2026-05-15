@@ -1,0 +1,35 @@
+<view class="filter-bar {{scrollable ? 'scrollable' : ''}}">
+  <scroll-view 
+    wx:if="{{scrollable}}"
+    class="filter-scroll"
+    scroll-x
+    show-scrollbar="{{false}}"
+    enhanced
+  >
+    <view class="filter-list">
+      <view 
+        class="filter-item {{index === activeIndex ? 'active' : ''}}"
+        wx:for="{{filters}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onFilterTap"
+      >
+        <text class="filter-text">{{item.label || item}}</text>
+        <view class="filter-indicator" wx:if="{{index === activeIndex}}"></view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:else class="filter-list">
+    <view 
+      class="filter-item {{index === activeIndex ? 'active' : ''}}"
+      wx:for="{{filters}}"
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onFilterTap"
+    >
+      <text class="filter-text">{{item.label || item}}</text>
+      <view class="filter-indicator" wx:if="{{index === activeIndex}}"></view>
+    </view>
+  </view>
+</view>

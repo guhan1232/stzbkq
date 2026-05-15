@@ -1,0 +1,233 @@
+/* components/report-card/report-card.wxss */
+.report-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-sm);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.report-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6rpx;
+  height: 100%;
+  background: var(--text-tertiary);
+}
+
+.report-card.win::before {
+  background: linear-gradient(180deg, var(--success), #00B894);
+}
+
+.report-card.lose::before {
+  background: linear-gradient(180deg, var(--danger), #EE5A6F);
+}
+
+.report-card.draw::before {
+  background: linear-gradient(180deg, var(--warning), #FFA502);
+}
+
+.report-card:active {
+  transform: scale(0.98);
+  background: var(--bg-elevated);
+}
+
+/* 结果徽章 */
+.card-result-badge {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 6rpx 16rpx;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10rpx);
+}
+
+.report-card.win .card-result-badge {
+  background: rgba(0, 210, 211, 0.15);
+  border: 1rpx solid rgba(0, 210, 211, 0.3);
+}
+
+.report-card.lose .card-result-badge {
+  background: rgba(255, 107, 107, 0.15);
+  border: 1rpx solid rgba(255, 107, 107, 0.3);
+}
+
+.report-card.draw .card-result-badge {
+  background: rgba(254, 202, 87, 0.15);
+  border: 1rpx solid rgba(254, 202, 87, 0.3);
+}
+
+.badge-icon {
+  font-size: 24rpx;
+}
+
+.badge-text {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 内容区 */
+.card-content {
+  flex: 1;
+  min-width: 0;
+  padding-right: 120rpx;
+}
+
+/* 对战双方 */
+.battle-parties {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  gap: var(--space-sm);
+}
+
+.party {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.party-label {
+  font-size: 20rpx;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.party-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.party-coords {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+.vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-sm);
+}
+
+.vs-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--primary-500);
+}
+
+/* 战损统计 */
+.casualties-stats {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  margin-bottom: var(--space-sm);
+  border-top: 1rpx solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.casualty-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.casualty-label {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.casualty-value {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.casualty-value.attacker {
+  color: var(--success);
+}
+
+.casualty-value.defender {
+  color: var(--danger);
+}
+
+/* 元信息 */
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.meta-icon {
+  font-size: 22rpx;
+}
+
+.meta-text {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+/* 箭头 */
+.card-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--space-sm);
+  font-size: 48rpx;
+  color: var(--text-tertiary);
+  font-weight: 300;
+}
+
+/* 紧凑模式 */
+.report-card.compact {
+  padding: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.report-card.compact .card-content {
+  padding-right: 100rpx;
+}
+
+.report-card.compact .battle-parties {
+  margin-bottom: var(--space-sm);
+}
+
+.report-card.compact .party-name {
+  font-size: 26rpx;
+}
+
+.report-card.compact .casualties-stats {
+  display: none;
+}
+
+.report-card.compact .card-meta {
+  gap: var(--space-xs);
+}
+
+.report-card.compact .meta-text {
+  font-size: 20rpx;
+}

@@ -1,0 +1,11 @@
+.idea
+.env
+*.db
+*.exe
+stzbhelper-linux-amd64
+.vscode
+*.bak
+dist
+dist1
+*.zip
+nul

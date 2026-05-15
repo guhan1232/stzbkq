@@ -1,0 +1,68 @@
+<view 
+  class="report-card {{resultClass}} {{compact ? 'compact' : ''}}"
+  bindtap="onTap"
+>
+  <!-- 结果徽章 -->
+  <view class="card-result-badge">
+    <view class="badge-icon">{{resultClass === 'win' ? '⚔️' : resultClass === 'lose' ? '💀' : '⚖️'}}</view>
+    <text class="badge-text">{{resultText}}</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="card-content">
+    <!-- 对战双方 -->
+    <view class="battle-parties">
+      <!-- 攻击方 -->
+      <view class="party attacker">
+        <text class="party-label">攻</text>
+        <text class="party-name">{{report.attackerName || '未知'}}</text>
+        <text class="party-coords" wx:if="{{report.attackerX && report.attackerY}}">({{report.attackerX}},{{report.attackerY}})</text>
+      </view>
+
+      <!-- VS标识 -->
+      <view class="vs-divider">
+        <text class="vs-text">VS</text>
+      </view>
+
+      <!-- 防守方 -->
+      <view class="party defender">
+        <text class="party-label">守</text>
+        <text class="party-name">{{report.defenderName || '未知'}}</text>
+        <text class="party-coords" wx:if="{{report.defenderX && report.defenderY}}">({{report.defenderX}},{{report.defenderY}})</text>
+      </view>
+    </view>
+
+    <!-- 战损统计 -->
+    <view class="casualties-stats" wx:if="{{!compact}}">
+      <view class="casualty-item">
+        <text class="casualty-label">攻击方损失</text>
+        <text class="casualty-value attacker">{{report.attackerLoss || 0}}</text>
+      </view>
+      <view class="casualty-item">
+        <text class="casualty-label">防守方损失</text>
+        <text class="casualty-value defender">{{report.defenderLoss || 0}}</text>
+      </view>
+    </view>
+
+    <!-- 时间和地点 -->
+    <view class="card-meta">
+      <view class="meta-item" wx:if="{{formattedTime}}">
+        <text class="meta-icon">🕐</text>
+        <text class="meta-text">{{formattedTime}}</text>
+      </view>
+      <view class="meta-item" wx:if="{{report.battleType}}">
+        <text class="meta-icon">🎯</text>
+        <text class="meta-text">{{report.battleType}}</text>
+      </view>
+      <view class="meta-item" wx:if="{{report.location}}">
+        <text class="meta-icon">📍</text>
+        <text class="meta-text">{{report.location}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 右侧箭头 -->
+  <view class="card-arrow">
+    <text>›</text>
+  </view>
+</view>

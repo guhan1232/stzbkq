@@ -1,0 +1,152 @@
+<!-- 排行榜看板 -->
+<view class="page-container">
+  <!-- 加载状态 -->
+  <van-loading wx:if="{{loading}}" size="48rpx" vertical color="#A29BFE">加载中...</van-loading>
+
+  <block wx:else>
+    <!-- 概览统计 -->
+    <view class="summary-row">
+      <view class="summary-card">
+        <view class="summary-label">同盟排行</view>
+        <view class="summary-value text-theme">{{unionCount}}</view>
+        <view class="summary-hint">条记录</view>
+      </view>
+      <view class="summary-card">
+        <view class="summary-label">领地排行</view>
+        <view class="summary-value text-success">{{territoryCount}}</view>
+        <view class="summary-hint">条记录</view>
+      </view>
+      <view class="summary-card">
+        <view class="summary-label">个人积分</view>
+        <view class="summary-value text-warning">{{personalCount}}</view>
+        <view class="summary-hint">条事件</view>
+      </view>
+    </view>
+
+    <!-- Tab 切换 -->
+    <van-tabs active="{{ activeTab }}" bind:change="onTabChange" color="#A29BFE" swipeable sticky>
+
+      <!-- 同盟排行 -->
+      <van-tab name="union" title="同盟排行(700)">
+        <view class="tab-content">
+          <!-- 搜索栏 -->
+          <view class="search-bar">
+            <van-search value="{{ keyword }}" placeholder="按同盟名过滤" bind:change="onKeywordInput" bind:search="searchUnion" shape="round" background="transparent" />
+            <van-button size="small" type="primary" custom-class="search-btn" bindtap="searchUnion">查询</van-button>
+          </view>
+
+          <!-- 数据列表 -->
+          <view wx:if="{{unionList.length > 0}}" class="rank-list">
+            <view class="cu-item" wx:for="{{unionList}}" wx:key="id">
+              <view class="item-left">
+                <view class="cu-avatar {{index < 3 ? 'bg-gradual-orange' : 'bg-gray'}} sm">
+                  <text class="text-white text-bold">{{item.rank || (index + 1)}}</text>
+                </view>
+                <view class="item-info">
+                  <view class="text-bold">{{item.name}}</view>
+                  <view class="text-sm text-gray margin-top-xs">
+                    势力 <text class="text-theme">{{item.power}}</text> · 
+                    成员 <text>{{item.total_member}}</text> · 
+                    城池 <text>{{item.total_npc_city}}</text>
+                  </view>
+                </view>
+              </view>
+              <view class="item-right">
+                <text class="text-xs text-gray">{{item.refresh_time_text}}</text>
+              </view>
+            </view>
+          </view>
+
+          <van-empty wx:else image="search" description="暂无数据，请在游戏内打开【同盟排行榜】触发抓包后刷新" />
+        </view>
+      </van-tab>
+
+      <!-- 领地排行 -->
+      <van-tab name="territory" title="领地排行(6314)">
+        <view class="tab-content">
+          <view class="info-tip">cmd 6314 是打开个人排行榜时服务端下发的领地数据，包含玩家坐标、同盟ID和领地列表。</view>
+
+          <view wx:if="{{territoryList.length > 0}}" class="rank-list">
+            <view class="cu-item" wx:for="{{territoryList}}" wx:key="id">
+              <view class="item-left">
+                <view class="cu-avatar {{index < 3 ? 'bg-gradual-blue' : 'bg-gray'}} sm">
+                  <text class="text-white text-bold">{{item.rank}}</text>
+                </view>
+                <view class="item-info">
+                  <view class="text-bold">{{item.player_name || '(未知)'}}</view>
+                  <view class="text-sm text-gray margin-top-xs">
+                    坐标 <text class="text-theme">{{item.player_pos}}</text> · 
+                    同盟 <text>{{item.alliance_id}}</text> · 
+                    领地 <text class="text-success">{{item.territory_count}}</text>
+                  </view>
+                </view>
+              </view>
+              <view class="item-right">
+                <text class="text-xs text-gray">{{item.capture_time_text}}</text>
+              </view>
+            </view>
+          </view>
+
+          <van-empty wx:else image="search" description="暂无数据，请在游戏内打开【个人排行榜】触发 cmd 6314 后刷新" />
+        </view>
+      </van-tab>
+
+      <!-- 个人积分事件 -->
+      <van-tab name="personal" title="个人积分(514)">
+        <view class="tab-content">
+          <view class="info-tip">cmd 514 包含各事件类型的积分数据，可按事件类型筛选。</view>
+
+          <!-- 事件类型分布标签 -->
+          <view wx:if="{{eventGroups.length > 0}}" class="event-summary">
+            <view class="event-title">事件类型分布</view>
+            <scroll-view scroll-x class="event-scroll" enable-flex>
+              <view class="event-chips">
+                <van-tag 
+                  wx:for="{{eventGroups}}" wx:key="event_id"
+                  plain type="primary"
+                  class="event-chip {{eventId == item.event_id ? 'active' : ''}}"
+                  data-eid="{{item.event_id}}"
+                  bindtap="tapEventChip"
+                >
+                  {{item.event_id}} ({{item.count}}条)
+                </van-tag>
+              </view>
+            </scroll-view>
+          </view>
+
+          <!-- 搜索栏 -->
+          <view class="search-bar">
+            <van-search value="{{ eventId }}" placeholder="输入事件类型ID" bind:change="onEventIdInput" bind:search="searchPersonal" shape="round" background="transparent" />
+            <van-button size="small" type="primary" custom-class="search-btn" bindtap="searchPersonal">查询</van-button>
+            <van-button wx:if="{{eventId}}" size="small" plain type="default" custom-class="search-btn" bindtap="clearEventFilter">清除</van-button>
+          </view>
+
+          <view wx:if="{{personalList.length > 0}}" class="rank-list">
+            <view class="cu-item" wx:for="{{personalList}}" wx:key="id">
+              <view class="item-left">
+                <view class="item-info">
+                  <view class="text-bold">{{item.player_name || '(未知)'}}</view>
+                  <view class="text-sm text-gray margin-top-xs">
+                    事件 <text class="text-theme">{{item.event_id}}</text> · 
+                    对象 <text>{{item.object_id}}</text>
+                  </view>
+                </view>
+              </view>
+              <view class="item-right text-right">
+                <view class="text-lg text-bold text-warning">{{item.param_a}}</view>
+                <text class="text-xs text-gray">{{item.capture_time_text}}</text>
+              </view>
+            </view>
+          </view>
+
+          <van-empty wx:else image="search" description="暂无数据，请在游戏内打开【个人排行榜】触发 cmd 514 抓包后刷新" />
+        </view>
+      </van-tab>
+    </van-tabs>
+
+    <!-- 刷新按钮 -->
+    <view class="refresh-btn-area">
+      <van-button round type="primary" icon="replay" size="small" bindtap="refreshData">刷新数据</van-button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "stat-card": "/components/stat-card/stat-card"
+  },
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
+  "navigationBarTitleText": "个人中心",
+  "backgroundColor": "#F8F9FA"
+}

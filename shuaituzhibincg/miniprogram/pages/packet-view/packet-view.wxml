@@ -1,0 +1,57 @@
+<!--pages/packet-view/packet-view.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">📊 数据包展示</text>
+    <text class="subtitle">2200协议数据</text>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-bar">
+    <view class="stat-item">
+      <text class="stat-value">{{packets.length}}</text>
+      <text class="stat-label">数据包</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{stats.total_packets}}</text>
+      <text class="stat-label">总捕获</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{duration}}</text>
+      <text class="stat-label">运行时长</text>
+    </view>
+  </view>
+
+  <!-- 数据列表 -->
+  <view class="data-list">
+    <view wx:if="{{packets.length === 0}}" class="empty-state">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无数据</text>
+      <text class="empty-hint">请先在数据包捕获页面开始捕获</text>
+    </view>
+
+    <view wx:for="{{packets}}" wx:key="index" class="data-card">
+      <!-- 卡片头部 -->
+      <view class="card-header">
+        <view class="header-left">
+          <text class="cmd-id">2200</text>
+          <text class="timestamp">{{item.timestamp}}</text>
+        </view>
+        <text class="size-tag">{{item.size}}B</text>
+      </view>
+
+      <!-- 数据内容 -->
+      <view wx:if="{{item.has_data}}" class="data-content">
+        <view class="content-header">
+          <text class="content-label">📦 解析数据</text>
+        </view>
+        <scroll-view class="content-scroll" scroll-y="true">
+          <text class="content-text">{{item.display_data}}</text>
+        </scroll-view>
+        <view class="copy-bar">
+          <button class="copy-btn" data-text="{{item.parsed}}" bindtap="copyData">📋 复制数据</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

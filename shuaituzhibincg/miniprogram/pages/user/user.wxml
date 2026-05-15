@@ -1,0 +1,138 @@
+<!-- 用户页面 - 现代化深色主题 -->
+<view class="page-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card animate-fade-in">
+    <view class="user-bg"></view>
+    <view class="user-info">
+      <view class="avatar">
+        <text class="avatar-text">👤</text>
+      </view>
+      <view class="user-detail">
+        <text class="username">{{userInfo.nickname || userInfo.username || '用户'}}</text>
+        <view class="user-role {{isAdmin ? 'admin' : ''}}">
+          {{isAdmin ? '👑 管理员' : '👤 普通用户'}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-section animate-slide-up" style="animation-delay: 0.1s">
+    <stat-card 
+      value="{{userInfo.task_count || 0}}" 
+      label="参与任务"
+      icon="📋"
+      color="#6C5CE7"
+    />
+    <view class="stats-divider"></view>
+    <stat-card 
+      value="{{userInfo.battle_count || 0}}" 
+      label="战报数量"
+      icon="⚔️"
+      color="#FF6B6B"
+    />
+    <view class="stats-divider"></view>
+    <stat-card 
+      value="{{userInfo.land_count || 0}}" 
+      label="土地数量"
+      icon="🗺️"
+      color="#00D2D3"
+    />
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section animate-slide-up" style="animation-delay: 0.2s">
+    <view class="menu-title">常用功能</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goToDatabase">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #4CAF50, #66BB6A);">
+          <text>🗄️</text>
+        </view>
+        <text class="menu-name">数据库管理</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goToTeam">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">
+          <text>👥</text>
+        </view>
+        <text class="menu-name">同盟成员</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goToPacketCapture">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+          <text>📡</text>
+        </view>
+        <text class="menu-name">数据包捕获</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="viewStatistics">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">
+          <text>📊</text>
+        </view>
+        <text class="menu-name">数据统计</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 管理员菜单 -->
+  <view wx:if="{{isAdmin}}" class="menu-section animate-slide-up" style="animation-delay: 0.3s">
+    <view class="menu-title">管理员功能</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goToUserManage">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+          <text>👤</text>
+        </view>
+        <text class="menu-name">用户管理</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goToConfig">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+          <text>⚙️</text>
+        </view>
+        <text class="menu-name">系统配置</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- AI数据导出 -->
+  <view class="menu-section animate-slide-up" style="animation-delay: 0.4s">
+    <view class="menu-title">AI数据</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goToAIDataExport">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+          <text>📊</text>
+        </view>
+        <text class="menu-name">数据导出</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="menu-section animate-slide-up" style="animation-delay: 0.5s">
+    <view class="menu-title">其他</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="clearCache">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
+          <text>🗑️</text>
+        </view>
+        <text class="menu-name">清除缓存</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="showAbout">
+        <view class="menu-icon" style="background: linear-gradient(135deg, #6b7280, #9ca3af);">
+          <text>ℹ️</text>
+        </view>
+        <text class="menu-name">关于我们</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section animate-slide-up" style="animation-delay: 0.5s">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+</view>

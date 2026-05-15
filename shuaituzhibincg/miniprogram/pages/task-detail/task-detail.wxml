@@ -1,0 +1,237 @@
+<!-- 任务详情页面 - 清新绿色主题 -->
+<view class="detail-page">
+  <!-- 顶部任务卡片 -->
+  <view class="task-header">
+    <view class="task-title-row">
+      <text class="task-name">{{task.name || '任务详情'}}</text>
+      <view class="task-status {{task.progress >= 100 ? 'completed' : 'pending'}}">
+        {{task.progress >= 100 ? '已完成' : '进行中'}}
+      </view>
+    </view>
+    <view class="task-meta">
+      <view class="meta-item">
+        <text class="meta-icon">📍</text>
+        <text class="meta-text">{{task.posStr}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-icon">🕐</text>
+        <text class="meta-text">{{task.timeStr}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-header">
+      <text class="stats-title">参与统计</text>
+      <text class="stats-subtitle">目标分组：{{task.targetStr || '全部'}}</text>
+    </view>
+
+    <!-- 进度条 -->
+    <view class="progress-section">
+      <view class="progress-info">
+        <text class="progress-label">完成进度</text>
+        <text class="progress-value">{{task.progress}}%</text>
+      </view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{task.progress}}%"></view>
+      </view>
+    </view>
+
+    <!-- 四宫格统计 -->
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-icon target">👥</view>
+        <text class="stat-number">{{task.target_user_num || 0}}</text>
+        <text class="stat-label">应到人数</text>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon complete">✅</view>
+        <text class="stat-number">{{task.complete_user_num || 0}}</text>
+        <text class="stat-label">实到人数</text>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon leave">假</view>
+        <text class="stat-number">{{task.leave_user_num || 0}}</text>
+        <text class="stat-label">请假人数</text>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon absent">❌</view>
+        <text class="stat-number">{{task.notAttendedUsers || 0}}</text>
+        <text class="stat-label">未到人数</text>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon rate">📊</view>
+        <text class="stat-number">{{task.progress}}%</text>
+        <text class="stat-label">参与率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="primary-btn" bindtap="onStatistics" loading="{{statsLoading}}">
+      <text class="btn-icon">📈</text>
+      <text>统计考勤</text>
+    </button>
+    <button class="secondary-btn" bindtap="onViewReports">
+      <text class="btn-icon">📋</text>
+      <text>查看战报</text>
+    </button>
+  </view>
+
+  <!-- 管理员操作 -->
+  <view wx:if="{{isAdmin}}" class="action-section">
+    <button wx:if="{{!reportEnabled}}" class="enable-btn" bindtap="onEnableReport">
+      <text class="btn-icon">🔴</text>
+      <text>开启考勤</text>
+    </button>
+    <button wx:else class="disable-btn" bindtap="onDisableReport">
+      <text class="btn-icon">⏹</text>
+      <text>关闭考勤</text>
+    </button>
+    <button class="delete-btn" bindtap="onDeleteTask">
+      <text class="btn-icon">🗑</text>
+      <text>删除任务</text>
+    </button>
+  </view>
+
+  <!-- Tab切换 -->
+  <view class="tab-container">
+    <view class="tab-header">
+      <view class="tab-item {{activeTab === 'attended' ? 'active' : ''}}" bindtap="switchTab" data-tab="attended">
+        <text class="tab-text">已到 {{attendedList.length}}人</text>
+      </view>
+      <view class="tab-item {{activeTab === 'leave' ? 'active' : ''}}" bindtap="switchTab" data-tab="leave">
+        <text class="tab-text">请假 {{leaveList.length}}人</text>
+      </view>
+      <view class="tab-item {{activeTab === 'absent' ? 'active' : ''}}" bindtap="switchTab" data-tab="absent">
+        <text class="tab-text">未到 {{absentList.length}}人</text>
+      </view>
+    </view>
+
+    <!-- 团筛选栏 -->
+    <scroll-view wx:if="{{activeTab === 'attended'}}" scroll-x class="filter-bar" enhanced show-scrollbar="false" enable-flex>
+      <view class="filter-item {{filterGroup === '' ? 'active' : ''}}" bindtap="switchFilterGroup" data-group="">
+        <text class="filter-text">全部人员</text>
+        <text class="filter-count">{{attendedList.length}}人</text>
+      </view>
+      <block wx:for="{{attendedGroups}}" wx:key="name">
+        <view class="filter-item {{filterGroup === item.name ? 'active' : ''}}" bindtap="switchFilterGroup" data-group="{{item.name}}">
+          <text class="filter-text">{{item.name}}</text>
+          <text class="filter-count">{{item.count}}人</text>
+        </view>
+      </block>
+    </scroll-view>
+    <scroll-view wx:if="{{activeTab === 'leave'}}" scroll-x class="filter-bar" enhanced show-scrollbar="false" enable-flex>
+      <view class="filter-item {{filterGroup === '' ? 'active' : ''}}" bindtap="switchFilterGroup" data-group="">
+        <text class="filter-text">全部人员</text>
+        <text class="filter-count">{{leaveList.length}}人</text>
+      </view>
+      <block wx:for="{{leaveGroups}}" wx:key="name">
+        <view class="filter-item {{filterGroup === item.name ? 'active' : ''}}" bindtap="switchFilterGroup" data-group="{{item.name}}">
+          <text class="filter-text">{{item.name}}</text>
+          <text class="filter-count">{{item.count}}人</text>
+        </view>
+      </block>
+    </scroll-view>
+    <scroll-view wx:if="{{activeTab === 'absent'}}" scroll-x class="filter-bar" enhanced show-scrollbar="false" enable-flex>
+      <view class="filter-item {{filterGroup === '' ? 'active' : ''}}" bindtap="switchFilterGroup" data-group="">
+        <text class="filter-text">全部人员</text>
+        <text class="filter-count">{{absentList.length}}人</text>
+      </view>
+      <block wx:for="{{absentGroups}}" wx:key="name">
+        <view class="filter-item {{filterGroup === item.name ? 'active' : ''}}" bindtap="switchFilterGroup" data-group="{{item.name}}">
+          <text class="filter-text">{{item.name}}</text>
+          <text class="filter-count">{{item.count}}人</text>
+        </view>
+      </block>
+    </scroll-view>
+
+    <!-- 已到人员列表 -->
+    <view wx:if="{{activeTab === 'attended'}}" class="members-section">
+      <view class="group-section" wx:for="{{attendedDisplayGroups}}" wx:key="name">
+        <view class="group-header">
+          <text class="group-name">{{item.name}}</text>
+          <text class="group-count">{{item.count}}人</text>
+        </view>
+        <view class="members-list">
+          <view class="member-card attended" wx:for="{{item.list}}" wx:for-item="user" wx:key="name">
+            <view class="member-info">
+              <view class="member-avatar">{{user.firstChar || '?'}}</view>
+              <view class="member-detail">
+                <text class="member-name">{{user.name}}</text>
+                <text class="member-group">{{user.group}}</text>
+              </view>
+            </view>
+            <view class="member-stats">
+              <view class="stat-tag atk" wx:if="{{user.atk_num > 0}}">
+                <text>攻城 {{user.atk_num}}</text>
+              </view>
+              <view class="stat-tag dis" wx:if="{{user.dis_num > 0}}">
+                <text>拆迁 {{user.dis_num}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="empty-tip" wx:if="{{attendedDisplayGroups.length === 0}}">
+        <text>暂无已到人员</text>
+      </view>
+    </view>
+
+    <!-- 请假人员列表 -->
+    <view wx:if="{{activeTab === 'leave'}}" class="members-section">
+      <view class="group-section" wx:for="{{leaveDisplayGroups}}" wx:key="name">
+        <view class="group-header">
+          <text class="group-name">{{item.name}}</text>
+          <text class="group-count">{{item.count}}人</text>
+        </view>
+        <view class="members-list">
+          <view class="member-card leave" wx:for="{{item.list}}" wx:for-item="user" wx:key="name">
+            <view class="member-info">
+              <view class="member-avatar leave">{{user.firstChar || '?'}}</view>
+              <view class="member-detail">
+                <text class="member-name">{{user.name}}</text>
+                <text class="member-group">{{user.group}}</text>
+                <text class="member-reason" wx:if="{{user.leave_reason}}">{{user.leave_reason}}</text>
+              </view>
+            </view>
+            <button wx:if="{{isAdmin}}" class="mini-action-btn" bindtap="onSetLeave" data-user-id="{{user.id}}" data-name="{{user.name}}" data-leave="0">销假</button>
+          </view>
+        </view>
+      </view>
+      <view class="empty-tip" wx:if="{{leaveDisplayGroups.length === 0}}">
+        <text>暂无请假人员</text>
+      </view>
+    </view>
+
+    <!-- 未到人员列表 -->
+    <view wx:if="{{activeTab === 'absent'}}" class="members-section">
+      <view class="group-section" wx:for="{{absentDisplayGroups}}" wx:key="name">
+        <view class="group-header">
+          <text class="group-name">{{item.name}}</text>
+          <text class="group-count">{{item.count}}人</text>
+        </view>
+        <view class="members-list">
+          <view class="member-card absent" wx:for="{{item.list}}" wx:for-item="user" wx:key="name">
+            <view class="member-info">
+              <view class="member-avatar absent">{{user.firstChar || '?'}}</view>
+              <view class="member-detail">
+                <text class="member-name">{{user.name}}</text>
+                <text class="member-group">{{user.group}}</text>
+              </view>
+            </view>
+            <view class="member-badge absent">
+              <text>未参与</text>
+            </view>
+            <button wx:if="{{isAdmin}}" class="mini-action-btn leave-btn" bindtap="onSetLeave" data-user-id="{{user.id}}" data-name="{{user.name}}" data-leave="1">请假</button>
+          </view>
+        </view>
+      </view>
+      <view class="empty-tip" wx:if="{{absentDisplayGroups.length === 0}}">
+        <text>太棒了！全员到齐</text>
+      </view>
+    </view>
+  </view>
+</view>

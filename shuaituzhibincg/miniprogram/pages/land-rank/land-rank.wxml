@@ -1,0 +1,40 @@
+<!-- 翻地排行榜 -->
+<view class="page-container">
+  <!-- 加载状态 -->
+  <view class="cu-load loading" wx:if="{{loading}}"></view>
+
+  <!-- 空状态 -->
+  <view class="empty-box" wx:elif="{{stats.length === 0}}">
+    <text class="cuIcon-rank text-gray" style="font-size: 120rpx;"></text>
+    <view class="empty-text">暂无翻地数据</view>
+  </view>
+
+  <!-- 排行榜 -->
+  <view class="cu-list menu" wx:else>
+    <view class="cu-item" wx:for="{{stats}}" wx:key="player_id" bindtap="viewPlayerDetail" data-name="{{item.player_name}}">
+      <view class="content padding-tb-sm">
+        <view class="flex align-center">
+          <!-- 排名 -->
+          <view class="cu-avatar {{index < 3 ? 'bg-gradual-orange' : 'bg-gray'}} sm margin-right">
+            <text class="text-white text-bold">{{index + 1}}</text>
+          </view>
+          <!-- 玩家名 -->
+          <view>
+            <view class="text-bold">{{item.player_name}}</view>
+            <view class="text-sm text-gray margin-top-xs">
+              成功 <text class="text-green">{{item.success_count}}</text> · 
+              失败 <text class="text-red">{{item.fail_count}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="action">
+        <view class="text-center">
+          <view class="text-xl text-bold text-theme">{{item.rateText}}</view>
+          <view class="text-sm text-gray">成功率</view>
+        </view>
+        <text class="cuIcon-right text-gray margin-left"></text>
+      </view>
+    </view>
+  </view>
+</view>

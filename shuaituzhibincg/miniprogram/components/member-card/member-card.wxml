@@ -1,0 +1,58 @@
+<view 
+  class="member-card {{variant}} {{roleClass}}"
+  bindtap="onTap"
+>
+  <!-- 头像区域 -->
+  <view class="card-avatar">
+    <image 
+      wx:if="{{!avatarError && member.avatar}}"
+      class="avatar-image"
+      src="{{member.avatar}}"
+      mode="aspectFill"
+      binderror="onAvatarError"
+    />
+    <view wx:else class="avatar-placeholder">
+      <text>{{memberNameFirstChar}}</text>
+    </view>
+    <!-- 在线状态指示器 -->
+    <view class="online-indicator {{member.online ? 'online' : 'offline'}}"></view>
+  </view>
+
+  <!-- 信息区域 -->
+  <view class="card-info">
+    <!-- 姓名和角色 -->
+    <view class="info-header">
+      <text class="member-name">{{member.name || '未知成员'}}</text>
+      <view class="role-badge {{roleClass}}">
+        <text>{{roleText}}</text>
+      </view>
+    </view>
+
+    <!-- 同盟和坐标 -->
+    <view class="info-details">
+      <text class="detail-item" wx:if="{{member.alliance}}">🏰 {{member.alliance}}</text>
+      <text class="detail-item" wx:if="{{member.x && member.y}}">📍 ({{member.x}},{{member.y}})</text>
+    </view>
+
+    <!-- 统计数据 -->
+    <view class="info-stats" wx:if="{{showStats}}">
+      <view class="stat-item" wx:if="{{member.power !== undefined}}">
+        <text class="stat-label">势力值</text>
+        <text class="stat-value">{{member.power}}</text>
+      </view>
+      <view class="stat-item" wx:if="{{member.landCount !== undefined}}">
+        <text class="stat-label">领地</text>
+        <text class="stat-value">{{member.landCount}}</text>
+      </view>
+      <view class="stat-item" wx:if="{{member.taskCompleted !== undefined}}">
+        <text class="stat-label">任务</text>
+        <text class="stat-value">{{member.taskCompleted}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 右侧操作区 -->
+  <view class="card-action" wx:if="{{variant === 'detailed'}}">
+    <text class="action-icon">›</text>
+  </view>
+</view>

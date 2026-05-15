@@ -1,0 +1,59 @@
+<!-- 任务页面 - 现代化深色科技风格 -->
+<view class="page-container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input">
+      <text class="search-icon">🔍</text>
+      <input 
+        placeholder="搜索任务名称、坐标..." 
+        placeholder-class="search-placeholder"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+      />
+      <text wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <filter-bar 
+    wx:if="{{!loading && tasks.length > 0}}"
+    filters="{{statusFilters}}"
+    activeFilter="{{activeStatusIndex}}"
+    bind:change="onStatusChange"
+  />
+
+  <!-- 加载状态 - 骨架屏 -->
+  <loading-skeleton 
+    wx:if="{{loading}}"
+    type="card"
+    count="5"
+  />
+
+  <!-- 任务列表 -->
+  <view wx:elif="{{filteredTasks.length > 0}}" class="task-list">
+    <task-card 
+      wx:for="{{filteredTasks}}" 
+      wx:key="id"
+      task="{{item}}"
+      showProgress="{{true}}"
+      bind:tap="onTaskDetail"
+      class="animate-slide-up"
+      style="animation-delay: {{index * 0.05}}s"
+    />
+  </view>
+
+  <!-- 空状态 -->
+  <empty-state
+    wx:else
+    icon="📋"
+    title="暂无任务"
+    description="还没有创建任何攻城任务"
+    actionText="{{isAdmin ? '创建任务' : ''}}"
+    bind:action="onCreateTask"
+  />
+
+  <!-- 悬浮按钮 -->
+  <view wx:if="{{isAdmin && tasks.length > 0}}" class="fab-btn" bindtap="onCreateTask">
+    <text>+</text>
+  </view>
+</view>

@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "hero-display": "/components/hero-display/hero-display",
+    "empty-state": "/components/empty-state/empty-state",
+    "loading-skeleton": "/components/loading-skeleton/loading-skeleton"
+  },
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
+  "navigationBarTitleText": "成员查询",
+  "backgroundColor": "#F8F9FA"
+}

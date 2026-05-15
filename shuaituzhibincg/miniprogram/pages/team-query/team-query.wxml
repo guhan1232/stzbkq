@@ -1,0 +1,148 @@
+<!-- 队伍查询 - 现代化深色科技风格 -->
+<view class="page-container">
+  <!-- 搜索区域 -->
+  <view class="search-section">
+    <view class="search-card">
+      <view class="search-input-wrapper">
+        <text class="search-icon">🔍</text>
+        <input 
+          class="search-input" 
+          placeholder="输入玩家名称" 
+          value="{{playerName}}" 
+          bindinput="onPlayerNameInput" 
+          bindconfirm="doSearch"
+          placeholder-class="search-placeholder"
+        />
+      </view>
+      <view class="search-divider"></view>
+      <view class="search-input-wrapper">
+        <text class="search-icon">🏰</text>
+        <input 
+          class="search-input" 
+          placeholder="输入同盟名称（可选）" 
+          value="{{unionName}}" 
+          bindinput="onUnionNameInput" 
+          bindconfirm="doSearch"
+          placeholder-class="search-placeholder"
+        />
+      </view>
+    </view>
+    
+    <view class="search-actions">
+      <button class="btn-search" bindtap="doSearch">
+        <text class="btn-icon">🔎</text>
+        <text>查询</text>
+      </button>
+      <button class="btn-reset" bindtap="resetSearch">
+        <text class="btn-icon">↺</text>
+        <text>重置</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 加载状态 - 骨架屏 -->
+  <loading-skeleton 
+    wx:if="{{loading}}"
+    type="card"
+    count="3"
+  />
+
+  <!-- 未搜索 -->
+  <empty-state
+    wx:elif="{{!searched}}"
+    icon="🔍"
+    title="查询队伍配置"
+    description="输入玩家名称查看武将、等级、红度等信息"
+  />
+
+  <!-- 空结果 -->
+  <empty-state
+    wx:elif="{{searched && teamList.length === 0}}"
+    icon="📭"
+    title="未找到相关队伍"
+    description="请确认该玩家有战报数据，或检查数据库是否包含战报"
+  />
+
+  <!-- 结果统计 -->
+  <view class="result-header" wx:if="{{searched && teamList.length > 0}}">
+    <text class="result-count">共找到 {{totalCount}} 条队伍记录</text>
+  </view>
+
+  <!-- 队伍列表 -->
+  <view class="team-list" wx:if="{{searched && teamList.length > 0}}">
+    <view class="team-card animate-slide-up" wx:for="{{teamList}}" wx:key="index" style="animation-delay: {{index * 0.05}}s">
+      <!-- 队伍头部 -->
+      <view class="team-header">
+        <view class="team-info">
+          <text class="player-name">{{item.player_name}}</text>
+          <view class="team-meta">
+            <view class="role-badge {{item.role}}">
+              <text>{{item.role === 'attack' ? '进攻方' : '防守方'}}</text>
+            </view>
+            <text class="meta-time" wx:if="{{item.timeText}}">{{item.timeText}}</text>
+          </view>
+        </view>
+        <view class="team-stats">
+          <text class="star-text">{{item.starText}}</text>
+          <text class="hp-text">{{item.hpText}}</text>
+        </view>
+      </view>
+
+      <!-- 武将列表 -->
+      <view class="heroes-container">
+        <hero-display
+          wx:if="{{item.hero1_id > 0}}"
+          hero="{{item.hero1Data}}"
+          showSkills="{{true}}"
+          mode="compact"
+        />
+        <hero-display
+          wx:if="{{item.hero2_id > 0}}"
+          hero="{{item.hero2Data}}"
+          showSkills="{{true}}"
+          mode="compact"
+        />
+        <hero-display
+          wx:if="{{item.hero3_id > 0}}"
+          hero="{{item.hero3Data}}"
+          showSkills="{{true}}"
+          mode="compact"
+        />
+      </view>
+
+      <!-- 宝物列表 -->
+      <view class="gears-container" wx:if="{{item.gears.length > 0}}">
+        <view class="gears-header">
+          <text class="gears-title">💎 宝物</text>
+        </view>
+        <view class="gears-grid">
+          <view class="gear-item" wx:for="{{item.gears}}" wx:for-item="gear" wx:key="gearId">
+            <view class="gear-icon-wrap">
+              <image
+                class="gear-icon"
+                src="https://cbg-stzb.res.netease.com/game_res/gears/gear_icon/gear_icon_{{gear.gearId}}.jpg"
+                mode="aspectFill"
+                binderror="onGearIconError"
+              />
+            </view>
+            <view class="gear-info">
+              <view class="gear-name-row">
+                <text class="gear-name">{{gear.name}}</text>
+                <text class="gear-entry {{gear.entryClass}}">{{gear.entryName}}</text>
+              </view>
+              <text class="gear-level">Lv.{{gear.level}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部操作 -->
+      <view class="team-footer">
+        <button class="btn-view-report" catchtap="viewBattleReport" data-name="{{item.player_name}}">
+          <text class="btn-icon">📊</text>
+          <text>查看战报</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

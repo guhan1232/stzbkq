@@ -1,0 +1,95 @@
+<!-- 战报页面 - 现代化深色科技风格 -->
+<view class="page-container">
+  <!-- 任务战报标题 -->
+  <view wx:if="{{taskId}}" class="task-report-header">
+    <text class="header-title">任务战报列表</text>
+    <text class="header-desc">该任务关联的所有战报</text>
+  </view>
+
+  <!-- 管理员控制面板 -->
+  <view wx:if="{{isAdmin && !taskId}}" class="admin-panel">
+    <view class="admin-card">
+      <view class="card-header">
+        <text class="card-title">🎛️ 管理员控制台</text>
+      </view>
+      <view class="control-list">
+        <view class="control-item">
+          <view class="control-info">
+            <text class="control-label">战报抓取</text>
+            <text class="control-desc">实时抓取攻城战报</text>
+          </view>
+          <van-switch
+            checked="{{reportEnabled}}"
+            size="48rpx"
+            active-color="var(--primary-500)"
+            bind:change="toggleReport"
+          />
+        </view>
+        <view class="control-divider"></view>
+        <view class="control-item">
+          <view class="control-info">
+            <text class="control-label">战斗数据</text>
+            <text class="control-desc">实时抓取战斗记录</text>
+          </view>
+          <van-switch
+            checked="{{battleReportEnabled}}"
+            size="48rpx"
+            active-color="var(--primary-500)"
+            bind:change="toggleBattleReport"
+          />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input">
+      <text class="search-icon">🔍</text>
+      <input 
+        placeholder="搜索战报..." 
+        placeholder-class="search-placeholder"
+        value="{{searchKeyword}}"
+        bindinput="onSearchChange"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <!-- 类型筛选 -->
+  <filter-bar
+    wx:if="{{!taskId}}"
+    filters="{{typeFilters}}"
+    activeFilter="{{activeTypeIndex}}"
+    bind:change="onTypeChange"
+  />
+
+  <!-- 加载状态 - 骨架屏 -->
+  <loading-skeleton 
+    wx:if="{{loading}}"
+    type="card"
+    count="5"
+  />
+
+  <!-- 战报列表 -->
+  <view wx:elif="{{filteredReports.length > 0}}" class="report-list">
+    <report-card 
+      wx:for="{{filteredReports}}" 
+      wx:key="id"
+      report="{{item}}"
+      bind:tap="viewDetail"
+      class="animate-slide-up"
+      style="animation-delay: {{index * 0.05}}s"
+    />
+  </view>
+
+  <!-- 空状态 -->
+  <empty-state
+    wx:else
+    icon="📊"
+    title="暂无战报数据"
+    description="还没有任何战报记录"
+  />
+</view>
+
+<van-toast id="van-toast" />

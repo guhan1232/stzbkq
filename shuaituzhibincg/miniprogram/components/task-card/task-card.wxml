@@ -1,0 +1,64 @@
+<view 
+  class="task-card {{statusClass}} {{compact ? 'compact' : ''}}" 
+  bindtap="onTap"
+  bindlongpress="onLongPress"
+>
+  <!-- 左侧状态指示器 -->
+  <view class="card-status-indicator">
+    <view class="indicator-dot"></view>
+  </view>
+
+  <!-- 主要内容区 -->
+  <view class="card-content">
+    <!-- 标题行 -->
+    <view class="card-header">
+      <text class="card-title">{{task.name || '未命名任务'}}</text>
+      <view class="card-badge {{statusClass}}">
+        <text>{{statusText}}</text>
+      </view>
+    </view>
+
+    <!-- 坐标和时间信息 -->
+    <view class="card-info">
+      <view class="info-item" wx:if="{{task.x && task.y}}">
+        <text class="info-icon">📍</text>
+        <text class="info-text">{{task.x}},{{task.y}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-icon">⏰</text>
+        <text class="info-text">{{formattedTime}}</text>
+      </view>
+      <view class="info-item" wx:if="{{timeDiffText}}">
+        <text class="info-icon">🕐</text>
+        <text class="info-text">{{timeDiffText}}</text>
+      </view>
+    </view>
+
+    <!-- 描述文本 -->
+    <text class="card-description" wx:if="{{task.description}}">{{task.description}}</text>
+
+    <!-- 进度条 -->
+    <view class="card-progress" wx:if="{{showProgress && task.progress !== undefined}}">
+      <view class="progress-bar">
+        <view 
+          class="progress-fill {{statusClass}}" 
+          style="width: {{task.progress}}%"
+        ></view>
+      </view>
+      <text class="progress-text">{{task.progress}}%</text>
+    </view>
+
+    <!-- 参与人数 -->
+    <view class="card-footer" wx:if="{{task.participantCount !== undefined}}">
+      <view class="participants">
+        <text class="participant-icon">👥</text>
+        <text class="participant-count">{{task.participantCount}}人参与</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 右侧箭头 -->
+  <view class="card-arrow" wx:if="{{clickable}}">
+    <text>›</text>
+  </view>
+</view>

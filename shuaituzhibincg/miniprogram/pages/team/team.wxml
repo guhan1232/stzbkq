@@ -1,0 +1,43 @@
+<!-- 同盟成员页面 - 清新绿色风格 -->
+<view class="page-container">
+  <!-- 搜索栏 -->
+  <view class="search-box">
+    <view class="search-input">
+      <text class="search-icon">🔍</text>
+      <input placeholder="搜索成员" value="{{searchText}}" bindinput="onSearchInput" />
+    </view>
+  </view>
+
+  <!-- 分组选择 -->
+  <scroll-view scroll-x class="group-scroll" enable-flex>
+    <view class="group-tags">
+      <view class="group-tag {{!activeGroup ? 'active' : ''}}" bindtap="switchGroup" data-group="">全部</view>
+      <view class="group-tag {{activeGroup === item ? 'active' : ''}}" wx:for="{{groups}}" wx:key="*this" bindtap="switchGroup" data-group="{{item}}">{{item}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 成员列表 -->
+  <view class="member-list" wx:if="{{members.length > 0}}">
+    <member-card 
+      wx:for="{{members}}" 
+      wx:key="id"
+      member="{{item}}"
+      variant="detailed"
+      show-stats="true"
+      bindtap="onMemberTap"
+    />
+  </view>
+
+  <!-- 空状态 -->
+  <empty-state 
+    wx:if="{{members.length === 0 && !loading}}"
+    icon="👥"
+    title="暂无成员数据"
+    description="当前同盟下没有成员"
+  />
+
+  <!-- 加载状态 -->
+  <view class="loading-more" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

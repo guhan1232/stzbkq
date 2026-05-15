@@ -1,0 +1,115 @@
+<!--pages/packet-capture/packet-capture.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">📡 数据包捕获</text>
+    <text class="subtitle">2200协议监控</text>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-container">
+    <view class="stat-card">
+      <text class="stat-label">捕获状态</text>
+      <view class="stat-value">
+        <text class="status-tag {{stats.is_running ? 'running' : 'stopped'}}">
+          {{stats.is_running ? '运行中' : '已停止'}}
+        </text>
+      </view>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">数据包总数</text>
+      <text class="stat-value number">{{stats.total_packets}}</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">监听接口数</text>
+      <text class="stat-value number">{{stats.interfaces}}</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">运行时长</text>
+      <text class="stat-value number">{{duration}}</text>
+    </view>
+  </view>
+
+  <!-- 控制按钮 -->
+  <view class="control-buttons">
+    <button 
+      class="btn btn-primary" 
+      bindtap="startCapture" 
+      disabled="{{stats.is_running || starting}}"
+    >
+      {{starting ? '启动中...' : '▶️ 开始捕获'}}
+    </button>
+    <button 
+      class="btn btn-danger" 
+      bindtap="stopCapture" 
+      disabled="{{!stats.is_running || stopping}}"
+    >
+      {{stopping ? '停止中...' : '⏹️ 停止捕获'}}
+    </button>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view class="export-buttons">
+    <button 
+      class="btn btn-success" 
+      bindtap="exportCSV"
+      disabled="{{stats.total_packets === 0}}"
+    >
+      📄 导出CSV
+    </button>
+    <button 
+      class="btn btn-success" 
+      bindtap="exportJSON"
+      disabled="{{stats.total_packets === 0}}"
+    >
+      📋 导出JSON
+    </button>
+  </view>
+
+  <!-- 刷新按钮 -->
+  <view class="refresh-bar">
+    <button 
+      class="btn-refresh" 
+      bindtap="refreshPackets"
+      disabled="{{stats.total_packets === 0}}"
+    >
+      🔄 刷新列表
+    </button>
+  </view>
+
+  <!-- 数据包列表 -->
+  <view class="packet-list">
+    <view class="list-header">
+      <text class="header-title">📦 数据包列表 (最近{{packets.length}}条)</text>
+      <text wx:if="{{stats.is_running}}" class="live-tag">实时更新</text>
+    </view>
+
+    <view wx:if="{{packets.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无数据包</text>
+      <text class="empty-hint">点击"开始捕获"按钮开始监控</text>
+    </view>
+
+    <view wx:for="{{packets}}" wx:key="index" class="packet-item">
+      <view class="packet-header">
+        <text class="packet-time">{{item.timestamp}}</text>
+        <text class="packet-cmdid">{{item.cmd_id}}</text>
+      </view>
+      <view class="packet-info">
+        <text class="info-label">源IP:</text>
+        <text class="info-value">{{item.src_ip}}</text>
+      </view>
+      <view class="packet-info">
+        <text class="info-label">目标IP:</text>
+        <text class="info-value">{{item.dst_ip}}</text>
+      </view>
+      <view class="packet-info">
+        <text class="info-label">大小:</text>
+        <text class="info-value">{{item.size}} B</text>
+      </view>
+      <view wx:if="{{item.parsed}}" class="packet-data">
+        <text class="data-label">解析内容:</text>
+        <text class="data-content">{{formatParsedData(item.parsed)}}</text>
+      </view>
+    </view>
+  </view>
+</view>

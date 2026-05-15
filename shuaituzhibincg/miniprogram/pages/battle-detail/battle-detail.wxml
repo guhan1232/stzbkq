@@ -1,0 +1,98 @@
+<!-- 战报详情页面 - 银行风格 -->
+<view class="detail-page">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 战报详情 -->
+  <view wx:elif="{{detail}}" class="detail-content">
+    <!-- 对战双方 -->
+    <view class="battle-card">
+      <view class="battle-players">
+        <view class="player atk">
+          <view class="player-avatar">{{firstChar(detail.attack_name)}}</view>
+          <view class="player-info">
+            <view class="player-label">攻击方</view>
+            <view class="player-name">{{detail.attack_name || '未知'}}</view>
+            <view class="player-union" wx:if="{{detail.attack_union}}">{{detail.attack_union}}</view>
+          </view>
+        </view>
+        <view class="vs-box">
+          <text class="vs-text">VS</text>
+        </view>
+        <view class="player def">
+          <view class="player-avatar">{{firstChar(detail.defend_name)}}</view>
+          <view class="player-info">
+            <view class="player-label">防守方</view>
+            <view class="player-name">{{detail.defend_name || '未知'}}</view>
+            <view class="player-union" wx:if="{{detail.defend_union}}">{{detail.defend_union}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 战报信息 -->
+    <view class="info-card">
+      <view class="card-header">
+        <text class="card-title">战报信息</text>
+      </view>
+      <view class="info-list">
+        <view class="info-item">
+          <view class="info-left">
+            <text class="info-icon">🆔</text>
+            <text class="info-label">战报ID</text>
+          </view>
+          <view class="info-right">
+            <text class="info-value">{{battleId}}</text>
+            <text class="copy-btn" bindtap="copyBattleId">复制</text>
+          </view>
+        </view>
+        <view class="info-item">
+          <view class="info-left">
+            <text class="info-icon">🕐</text>
+            <text class="info-label">战斗时间</text>
+          </view>
+          <text class="info-value">{{detail.timeText}}</text>
+        </view>
+        <view class="info-item" wx:if="{{detail.result}}">
+          <view class="info-left">
+            <text class="info-icon">⚔️</text>
+            <text class="info-label">战斗结果</text>
+          </view>
+          <view class="result-tag {{detail.result === '胜利' ? 'win' : 'lose'}}">
+            {{detail.result}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 属性对比 -->
+    <view class="info-card" wx:if="{{detail.attack_hp || detail.defend_hp}}">
+      <view class="card-header">
+        <text class="card-title">属性对比</text>
+      </view>
+      <view class="compare-list">
+        <view class="compare-item" wx:if="{{detail.attack_hp}}">
+          <text class="compare-label">血量</text>
+          <view class="compare-bar">
+            <view class="bar-fill atk" style="width: 50%"></view>
+            <view class="bar-fill def" style="width: 50%"></view>
+          </view>
+          <view class="compare-values">
+            <text class="value atk">{{detail.attack_hp}}</text>
+            <text class="value def">{{detail.defend_hp || '-'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 无数据 -->
+  <view wx:else class="empty-container">
+    <text class="empty-icon">📋</text>
+    <text class="empty-title">战报不存在</text>
+    <text class="empty-desc">该战报可能已被删除</text>
+  </view>
+</view>

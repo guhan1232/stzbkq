@@ -1,0 +1,652 @@
+<!-- Web端 - AI密钥管理页面 (Vue 3) -->
+<template>
+  <div class="ai-key-manager">
+    <div class="page-header">
+      <h1>🔑 AI密钥管理</h1>
+      <p>生成和管理AI服务的API密钥</p>
+    </div>
+
+    <!-- 生成新密钥 -->
+    <div class="card generate-section">
+      <h2>生成新密钥</h2>
+      <form @submit.prevent="generateKey">
+        <div class="form-group">
+          <label for="serviceName">服务名称</label>
+          <input 
+            id="serviceName"
+            v-model="newKey.serviceName" 
+            type="text" 
+            placeholder="例如：我的AI训练服务"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="serviceId">服务ID（可选）</label>
+          <input 
+            id="serviceId"
+            v-model="newKey.serviceId" 
+            type="text" 
+            placeholder="留空则自动生成"
+          />
+          <small>如果不填写，系统将自动生成唯一ID</small>
+        </div>
+
+        <div class="form-group">
+          <label for="description">描述</label>
+          <textarea 
+            id="description"
+            v-model="newKey.description" 
+            placeholder="此密钥的用途说明"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="expireDays">有效期（天）</label>
+          <select id="expireDays" v-model="newKey.expireDays">
+            <option value="30">30天</option>
+            <option value="90">90天</option>
+            <option value="180">180天</option>
+            <option value="365">1年</option>
+            <option value="0">永久有效</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" :disabled="generating">
+          {{ generating ? '生成中...' : '生成密钥' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- 新生成的密钥显示 -->
+    <div v-if="generatedKey" class="card generated-key">
+      <div class="success-icon">✅</div>
+      <h2>密钥生成成功</h2>
+      <p class="warning">⚠️ 请妥善保管，关闭后将无法再次查看完整密钥！</p>
+      
+      <div class="key-display">
+        <div class="key-item">
+          <label>API地址</label>
+          <div class="key-value">
+            <code>{{ apiBaseUrl }}</code>
+            <button @click="copyToClipboard(apiBaseUrl)" class="btn-copy">复制</button>
+          </div>
+        </div>
+
+        <div class="key-item">
+          <label>服务ID</label>
+          <div class="key-value">
+            <code>{{ generatedKey.serviceId }}</code>
+            <button @click="copyToClipboard(generatedKey.serviceId)" class="btn-copy">复制</button>
+          </div>
+        </div>
+
+        <div class="key-item">
+          <label>API密钥</label>
+          <div class="key-value">
+            <code class="secret-key">{{ generatedKey.apiKey }}</code>
+            <button @click="copyToClipboard(generatedKey.apiKey)" class="btn-copy">复制</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="key-actions">
+        <button @click="downloadKeyConfig" class="btn-secondary">下载配置文件</button>
+        <button @click="generatedKey = null" class="btn-text">我已保存</button>
+      </div>
+    </div>
+
+    <!-- 密钥列表 -->
+    <div class="card keys-list">
+      <h2>已生成的密钥</h2>
+      
+      <div v-if="keys.length === 0" class="empty-state">
+        <p>暂无密钥，请先生成</p>
+      </div>
+
+      <div v-else class="key-cards">
+        <div v-for="key in keys" :key="key.id" class="key-card">
+          <div class="key-header">
+            <h3>{{ key.serviceName }}</h3>
+            <span :class="['status-badge', key.isActive ? 'active' : 'inactive']">
+              {{ key.isActive ? '启用' : '禁用' }}
+            </span>
+          </div>
+
+          <div class="key-info">
+            <div class="info-row">
+              <span class="label">服务ID:</span>
+              <code>{{ key.serviceId }}</code>
+            </div>
+            <div class="info-row">
+              <span class="label">API密钥:</span>
+              <code>{{ maskKey(key.apiKey) }}</code>
+              <button @click="showFullKey(key)" class="btn-link">查看</button>
+            </div>
+            <div class="info-row">
+              <span class="label">创建时间:</span>
+              <span>{{ formatDate(key.createdAt) }}</span>
+            </div>
+            <div class="info-row" v-if="key.expiresAt">
+              <span class="label">过期时间:</span>
+              <span :class="{ 'expiring-soon': isExpiringSoon(key.expiresAt) }">
+                {{ formatDate(key.expiresAt) }}
+              </span>
+            </div>
+            <div class="info-row" v-if="key.description">
+              <span class="label">描述:</span>
+              <span>{{ key.description }}</span>
+            </div>
+          </div>
+
+          <div class="key-actions">
+            <button 
+              @click="toggleKeyStatus(key)" 
+              :class="key.isActive ? 'btn-warning' : 'btn-success'"
+            >
+              {{ key.isActive ? '禁用' : '启用' }}
+            </button>
+            <button @click="regenerateKey(key)" class="btn-secondary">重新生成</button>
+            <button @click="deleteKey(key)" class="btn-danger">删除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 使用说明 -->
+    <div class="card usage-guide">
+      <h2>📖 使用示例</h2>
+      <div class="code-block">
+        <pre><code>// JavaScript 示例
+const response = await fetch('https://stzb.kaoqin.txy.hanyuxin.cn/v1/api/ai-data/teams/all', {
+  headers: {
+    'X-AI-ID': '{{ exampleKey?.serviceId || 'your-service-id' }}',
+    'X-AI-Key': '{{ exampleKey?.apiKey || 'your-api-key' }}',
+    'Authorization': 'Bearer {{ exampleKey?.apiKey || 'your-api-key' }}'
+  }
+})
+
+const data = await response.json()
+console.log(data)</code></pre>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const apiBaseUrl = 'https://stzb.kaoqin.txy.hanyuxin.cn/v1'
+
+// 新密钥表单
+const newKey = ref({
+  serviceName: '',
+  serviceId: '',
+  description: '',
+  expireDays: '90'
+})
+
+const generating = ref(false)
+const generatedKey = ref(null)
+const keys = ref([])
+const exampleKey = ref(null)
+
+// 生成唯一ID
+function generateUniqueId() {
+  return 'svc_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36)
+}
+
+// 生成API密钥
+function generateApiKey() {
+  return 'sk_' + Array.from({ length: 48 }, () => 
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 62)]
+  ).join('')
+}
+
+// 生成密钥
+async function generateKey() {
+  generating.value = true
+  
+  try {
+    const keyData = {
+      id: Date.now().toString(),
+      serviceName: newKey.value.serviceName,
+      serviceId: newKey.value.serviceId || generateUniqueId(),
+      apiKey: generateApiKey(),
+      description: newKey.value.description,
+      createdAt: new Date().toISOString(),
+      isActive: true
+    }
+
+    // 设置过期时间
+    if (newKey.value.expireDays !== '0') {
+      const days = parseInt(newKey.value.expireDays)
+      const expireDate = new Date()
+      expireDate.setDate(expireDate.getDate() + days)
+      keyData.expiresAt = expireDate.toISOString()
+    }
+
+    // 保存到localStorage（实际应该保存到后端数据库）
+    const savedKeys = JSON.parse(localStorage.getItem('ai_keys') || '[]')
+    savedKeys.push(keyData)
+    localStorage.setItem('ai_keys', JSON.stringify(savedKeys))
+
+    // 显示生成的密钥
+    generatedKey.value = keyData
+    exampleKey.value = keyData
+    
+    // 刷新列表
+    loadKeys()
+
+    // 重置表单
+    newKey.value = {
+      serviceName: '',
+      serviceId: '',
+      description: '',
+      expireDays: '90'
+    }
+  } catch (error) {
+    console.error('生成密钥失败:', error)
+    alert('生成密钥失败: ' + error.message)
+  } finally {
+    generating.value = false
+  }
+}
+
+// 加载密钥列表
+function loadKeys() {
+  const savedKeys = JSON.parse(localStorage.getItem('ai_keys') || '[]')
+  keys.value = savedKeys.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+}
+
+// 掩码显示密钥
+function maskKey(key) {
+  if (!key) return ''
+  return key.substring(0, 8) + '...' + key.substring(key.length - 4)
+}
+
+// 显示完整密钥
+function showFullKey(key) {
+  if (confirm('确定要查看完整密钥吗？请确保周围环境安全。')) {
+    alert(`API密钥: ${key.apiKey}\n\n请妥善保管，不要泄露给他人！`)
+  }
+}
+
+// 切换密钥状态
+function toggleKeyStatus(key) {
+  key.isActive = !key.isActive
+  saveKeys()
+}
+
+// 重新生成密钥
+function regenerateKey(key) {
+  if (confirm('确定要重新生成密钥吗？旧密钥将立即失效。')) {
+    key.apiKey = generateApiKey()
+    key.regeneratedAt = new Date().toISOString()
+    saveKeys()
+    alert('密钥已重新生成，请妥善保管新密钥！')
+  }
+}
+
+// 删除密钥
+function deleteKey(key) {
+  if (confirm(`确定要删除密钥 "${key.serviceName}" 吗？此操作不可恢复！`)) {
+    const index = keys.value.findIndex(k => k.id === key.id)
+    if (index > -1) {
+      keys.value.splice(index, 1)
+      saveKeys()
+    }
+  }
+}
+
+// 保存密钥到localStorage
+function saveKeys() {
+  localStorage.setItem('ai_keys', JSON.stringify(keys.value))
+}
+
+// 复制到剪贴板
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('已复制到剪贴板')
+  }).catch(err => {
+    console.error('复制失败:', err)
+  })
+}
+
+// 下载配置文件
+function downloadKeyConfig() {
+  if (!generatedKey.value) return
+
+  const config = {
+    apiUrl: apiBaseUrl,
+    serviceId: generatedKey.value.serviceId,
+    apiKey: generatedKey.value.apiKey,
+    serviceName: generatedKey.value.serviceName,
+    createdAt: generatedKey.value.createdAt
+  }
+
+  const blob = new Blob([JSON.stringify(config, null, 2)], {
+    type: 'application/json'
+  })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `ai-key-config-${Date.now()}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+// 格式化日期
+function formatDate(dateString) {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  return date.toLocaleString('zh-CN')
+}
+
+// 检查是否即将过期
+function isExpiringSoon(expiresAt) {
+  if (!expiresAt) return false
+  const expireDate = new Date(expiresAt)
+  const now = new Date()
+  const daysUntilExpire = (expireDate - now) / (1000 * 60 * 60 * 24)
+  return daysUntilExpire <= 7 && daysUntilExpire > 0
+}
+
+// 页面加载时获取密钥列表
+onMounted(() => {
+  loadKeys()
+})
+</script>
+
+<style scoped>
+.ai-key-manager {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  color: #666;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 4px;
+  color: #999;
+  font-size: 12px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-warning,
+.btn-danger,
+.btn-copy,
+.btn-link,
+.btn-text {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #45a049;
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-success {
+  background: #52c41a;
+  color: white;
+}
+
+.btn-warning {
+  background: #faad14;
+  color: white;
+}
+
+.btn-danger {
+  background: #ff4d4f;
+  color: white;
+}
+
+.btn-copy {
+  padding: 4px 12px;
+  font-size: 12px;
+  background: #1890ff;
+  color: white;
+}
+
+.btn-link {
+  padding: 0;
+  background: none;
+  color: #1890ff;
+  text-decoration: underline;
+}
+
+.btn-text {
+  background: none;
+  color: #666;
+}
+
+.generated-key {
+  border: 2px solid #52c41a;
+}
+
+.success-icon {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.warning {
+  color: #faad14;
+  background: #fffbe6;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.key-display {
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.key-item {
+  margin-bottom: 12px;
+}
+
+.key-item:last-child {
+  margin-bottom: 0;
+}
+
+.key-item label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.key-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.key-value code {
+  flex: 1;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+.secret-key {
+  background: #fff1f0 !important;
+  color: #cf1322;
+}
+
+.key-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.key-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.key-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.key-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.key-header h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-badge.active {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+
+.status-badge.inactive {
+  background: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ffa39e;
+}
+
+.key-info {
+  margin-bottom: 12px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.info-row .label {
+  min-width: 80px;
+  color: #666;
+}
+
+.info-row code {
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.expiring-soon {
+  color: #faad14;
+  font-weight: 500;
+}
+
+.code-block {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.code-block pre {
+  margin: 0;
+}
+
+.code-block code {
+  color: #d4d4d4;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+</style>

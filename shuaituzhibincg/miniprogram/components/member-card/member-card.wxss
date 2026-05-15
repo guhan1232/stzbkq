@@ -1,0 +1,211 @@
+/* components/member-card/member-card.wxss */
+.member-card {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-sm);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  border-left: 4rpx solid transparent;
+}
+
+.member-card:active {
+  transform: scale(0.98);
+  background: var(--bg-elevated);
+}
+
+/* 角色边框颜色 */
+.member-card.leader {
+  border-left-color: #FFD700;
+}
+
+.member-card.co-leader {
+  border-left-color: #C0C0C0;
+}
+
+.member-card.officer {
+  border-left-color: var(--primary-500);
+}
+
+.member-card.normal {
+  border-left-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 头像区域 */
+.card-avatar {
+  position: relative;
+  margin-right: var(--space-md);
+}
+
+.avatar-image,
+.avatar-placeholder {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3rpx solid var(--primary-500);
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  font-size: 40rpx;
+  font-weight: 600;
+  color: white;
+}
+
+/* 在线状态指示器 */
+.online-indicator {
+  position: absolute;
+  bottom: 4rpx;
+  right: 4rpx;
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  border: 3rpx solid var(--bg-card);
+}
+
+.online-indicator.online {
+  background: var(--success);
+  box-shadow: 0 0 8rpx var(--success);
+}
+
+.online-indicator.offline {
+  background: var(--text-tertiary);
+}
+
+/* 信息区域 */
+.card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xs);
+}
+
+.member-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: var(--space-sm);
+}
+
+.role-badge {
+  padding: 4rpx 12rpx;
+  border-radius: var(--radius-full);
+  font-size: 20rpx;
+  font-weight: 500;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+}
+
+.role-badge.leader {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+  color: #FFD700;
+  border: 1rpx solid rgba(255, 215, 0, 0.4);
+}
+
+.role-badge.co-leader {
+  background: rgba(192, 192, 192, 0.15);
+  color: #C0C0C0;
+  border: 1rpx solid rgba(192, 192, 192, 0.3);
+}
+
+.role-badge.officer {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--primary-500);
+  border: 1rpx solid rgba(76, 175, 80, 0.3);
+}
+
+/* 详细信息 */
+.info-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.detail-item {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+/* 统计数据 */
+.info-stats {
+  display: flex;
+  gap: var(--space-lg);
+  padding-top: var(--space-sm);
+  border-top: 1rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.stat-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 操作区 */
+.card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--space-sm);
+}
+
+.action-icon {
+  font-size: 48rpx;
+  color: var(--text-tertiary);
+  font-weight: 300;
+}
+
+/* 紧凑模式 */
+.member-card.compact {
+  padding: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.member-card.compact .avatar-image,
+.member-card.compact .avatar-placeholder {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.member-card.compact .member-name {
+  font-size: 28rpx;
+}
+
+.member-card.compact .info-details {
+  display: none;
+}
+
+.member-card.compact .info-stats {
+  display: none;
+}
+
+/* 详细模式 */
+.member-card.detailed {
+  padding: var(--space-lg);
+}

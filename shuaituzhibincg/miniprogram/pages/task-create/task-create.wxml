@@ -1,0 +1,133 @@
+<!-- 创建任务页面 -->
+<view class="container">
+  <form bindsubmit="onSubmit">
+    <!-- 任务名称 -->
+    <view class="form-group">
+      <view class="form-label">任务名称 *</view>
+      <input 
+        class="form-input" 
+        placeholder="请输入任务名称"
+        value="{{formData.name}}"
+        bindinput="onInput"
+        data-field="name"
+      />
+    </view>
+
+    <!-- 任务时间 -->
+    <view class="form-group">
+      <view class="form-label">开始时间 *</view>
+      <!-- 快捷时间选项 -->
+      <view class="quick-time-options">
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="start" data-minutes="30">30分钟后</view>
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="start" data-minutes="60">1小时后</view>
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="start" data-minutes="120">2小时后</view>
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="start" data-minutes="180">3小时后</view>
+      </view>
+      <!-- 开始时间选择器 -->
+      <picker 
+        mode="multiSelector" 
+        range="{{timeRange}}" 
+        value="{{startTimeValue}}"
+        bindchange="onStartTimeChange"
+        bindcolumnchange="onTimeColumnChange"
+      >
+        <view class="form-picker">
+          <text class="{{formData.startTimeStr ? '' : 'placeholder'}}">
+            {{formData.startTimeStr || '请选择开始时间'}}
+          </text>
+          <text class="picker-arrow">▶</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 结束时间 -->
+    <view class="form-group">
+      <view class="form-label">结束时间 *</view>
+      <!-- 快捷时间选项 -->
+      <view class="quick-time-options">
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="end" data-minutes="60">1小时后</view>
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="end" data-minutes="120">2小时后</view>
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="end" data-minutes="180">3小时后</view>
+        <view class="quick-time-item" bindtap="setQuickTime" data-type="end" data-minutes="240">4小时后</view>
+      </view>
+      <!-- 结束时间选择器 -->
+      <picker 
+        mode="multiSelector" 
+        range="{{timeRange}}" 
+        value="{{endTimeValue}}"
+        bindchange="onEndTimeChange"
+        bindcolumnchange="onTimeColumnChange"
+      >
+        <view class="form-picker">
+          <text class="{{formData.endTimeStr ? '' : 'placeholder'}}">
+            {{formData.endTimeStr || '请选择结束时间'}}
+          </text>
+          <text class="picker-arrow">▶</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 任务坐标 -->
+    <view class="form-group">
+      <view class="form-label">任务坐标 *</view>
+      <view class="coord-inputs">
+        <input 
+          class="form-input coord-input" 
+          type="number"
+          placeholder="X坐标"
+          value="{{formData.posX}}"
+          bindinput="onInput"
+          data-field="posX"
+        />
+        <input 
+          class="form-input coord-input" 
+          type="number"
+          placeholder="Y坐标"
+          value="{{formData.posY}}"
+          bindinput="onInput"
+          data-field="posY"
+        />
+      </view>
+    </view>
+
+    <!-- 目标人数 -->
+    <view class="form-group">
+      <view class="form-label">目标人数 *</view>
+      <input 
+        class="form-input" 
+        type="number"
+        placeholder="请输入目标人数"
+        value="{{formData.targetUserNum}}"
+        bindinput="onInput"
+        data-field="targetUserNum"
+      />
+    </view>
+
+    <!-- 目标分组 -->
+    <view class="form-group">
+      <view class="form-label">目标分组</view>
+      <view class="checkbox-group" wx:if="{{groups.length > 0}}">
+        <label 
+          class="checkbox-item {{item.checked ? 'checked' : ''}}" 
+          wx:for="{{groups}}" 
+          wx:key="name"
+          bindtap="onGroupToggle"
+          data-id="{{item.name}}"
+        >
+          <text class="checkbox-icon">{{item.checked ? '✓' : ''}}</text>
+          <text class="checkbox-text">{{item.name}}</text>
+        </label>
+      </view>
+      <view class="no-groups" wx:else>
+        <text class="no-groups-text">暂无可选分组</text>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="form-actions">
+      <button class="btn-submit" form-type="submit" loading="{{submitting}}">
+        {{submitting ? '创建中...' : '创建任务'}}
+      </button>
+    </view>
+  </form>
+</view>

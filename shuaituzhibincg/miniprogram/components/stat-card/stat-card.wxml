@@ -1,0 +1,12 @@
+<!--components/stat-card/stat-card.wxml-->
+<view class="stat-card {{colorClass}}" bindtap="onTap">
+  <view class="card-bg-icon" wx:if="{{icon}}">{{icon}}</view>
+  <view class="card-content">
+    <text class="card-number {{animated ? 'animate-number' : ''}}">{{value}}</text>
+    <text class="card-label">{{title}}</text>
+    <view wx:if="{{trend}}" class="card-trend {{trend > 0 ? 'up' : 'down'}}">
+      <text>{{trend > 0 ? '↑' : '↓'}} {{Math.abs(trend)}}%</text>
+    </view>
+  </view>
+  <view class="card-glow"></view>
+</view>

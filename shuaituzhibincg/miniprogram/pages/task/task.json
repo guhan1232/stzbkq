@@ -1,0 +1,13 @@
+{
+  "usingComponents": {
+    "task-card": "/components/task-card/task-card",
+    "filter-bar": "/components/filter-bar/filter-bar",
+    "empty-state": "/components/empty-state/empty-state",
+    "loading-skeleton": "/components/loading-skeleton/loading-skeleton"
+  },
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
+  "navigationBarTitleText": "任务管理",
+  "backgroundColor": "#F8F9FA",
+  "enablePullDownRefresh": true
+}

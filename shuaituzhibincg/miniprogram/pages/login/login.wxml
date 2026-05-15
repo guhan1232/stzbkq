@@ -1,0 +1,109 @@
+<!-- 登录页面 - 银行风格 -->
+<view class="login-page">
+  <!-- 顶部Logo区域 -->
+  <view class="login-header">
+    <view class="logo-circle">
+      <text class="logo-icon">⚔️</text>
+    </view>
+    <text class="app-name">率土之滨助手</text>
+    <text class="app-slogan">攻城略地，运筹帷幄</text>
+  </view>
+
+  <!-- 登录表单 -->
+  <view class="login-form">
+    <view class="input-group">
+      <text class="input-icon">👤</text>
+      <input 
+        class="input-field"
+        placeholder="请输入用户名"
+        placeholder-class="input-placeholder"
+        value="{{username}}"
+        bindinput="onUsernameInput"
+      />
+    </view>
+    <view class="input-group">
+      <text class="input-icon">🔒</text>
+      <input 
+        class="input-field"
+        type="{{showPassword ? 'text' : 'password'}}"
+        placeholder="请输入密码"
+        placeholder-class="input-placeholder"
+        value="{{password}}"
+        bindinput="onPasswordInput"
+      />
+      <text class="input-toggle" bindtap="togglePassword">
+        {{showPassword ? '🙈' : '👁️'}}
+      </text>
+    </view>
+
+    <button 
+      class="login-btn {{loading ? 'loading' : ''}}"
+      loading="{{loading}}"
+      disabled="{{loading}}"
+      bindtap="onLogin"
+    >
+      {{loading ? '登录中...' : '登 录'}}
+    </button>
+
+    <view class="register-link">
+      <text class="link-text">还没有账号？</text>
+      <text class="link-action" bindtap="showRegisterDialog">立即注册</text>
+    </view>
+  </view>
+</view>
+
+<!-- 注册弹窗 -->
+<van-dialog
+  use-slot
+  title="注册账号"
+  show="{{showRegister}}"
+  show-cancel-button
+  confirm-button-text="注册"
+  confirm-button-color="#6C5CE7"
+  loading="{{regLoading}}"
+  bind:confirm="onRegister"
+  bind:close="hideRegister"
+>
+  <view class="register-form">
+    <view class="register-field">
+      <text class="field-label">用户名</text>
+      <input 
+        class="field-input"
+        placeholder="请输入用户名"
+        value="{{regUsername}}"
+        bindinput="onRegUsernameInput"
+      />
+    </view>
+    <view class="register-field">
+      <text class="field-label">密码</text>
+      <input 
+        class="field-input"
+        type="password"
+        placeholder="至少6位密码"
+        value="{{regPassword}}"
+        bindinput="onRegPasswordInput"
+      />
+    </view>
+    <view class="register-field">
+      <text class="field-label">确认密码</text>
+      <input 
+        class="field-input"
+        type="password"
+        placeholder="请再次输入密码"
+        value="{{regPassword2}}"
+        bindinput="onRegPassword2Input"
+      />
+    </view>
+    <view class="register-field">
+      <text class="field-label">昵称</text>
+      <input 
+        class="field-input"
+        placeholder="选填"
+        value="{{regNickname}}"
+        bindinput="onRegNicknameInput"
+      />
+    </view>
+  </view>
+</van-dialog>
+
+<van-toast id="van-toast" />

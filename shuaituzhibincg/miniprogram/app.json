@@ -1,0 +1,82 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/database/database",
+    "pages/index/index",
+    "pages/task/task",
+    "pages/task-create/task-create",
+    "pages/task-detail/task-detail",
+    "pages/report/report",
+    "pages/user/user",
+    "pages/team/team",
+    "pages/land-rank/land-rank",
+    "pages/battle-report/battle-report",
+    "pages/team-query/team-query",
+    "pages/land-records/land-records",
+    "pages/battle-detail/battle-detail",
+    "pages/share-task/share-task",
+    "pages/leaderboard/leaderboard",
+    "pages/packet-capture/packet-capture",
+    "pages/packet-view/packet-view",
+    "pages/ai-data-export/ai-data-export",
+    "pages/chat-message/chat-message"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#A88655",
+    "navigationBarTitleText": "率土之滨助手",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F0EBE1"
+  },
+  "tabBar": {
+    "color": "#B2BEC3",
+    "selectedColor": "#4CAF50",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "custom": true,
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/task/task",
+        "text": "任务"
+      },
+      {
+        "pagePath": "pages/team-query/team-query",
+        "text": "队伍"
+      },
+      {
+        "pagePath": "pages/report/report",
+        "text": "战报"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index",
+    "van-cell": "@vant/weapp/cell/index",
+    "van-cell-group": "@vant/weapp/cell-group/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-loading": "@vant/weapp/loading/index",
+    "van-nav-bar": "@vant/weapp/nav-bar/index",
+    "van-search": "@vant/weapp/search/index",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-tag": "@vant/weapp/tag/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-dialog": "@vant/weapp/dialog/index",
+    "van-empty": "@vant/weapp/empty/index",
+    "van-popup": "@vant/weapp/popup/index",
+    "van-switch": "@vant/weapp/switch/index",
+    "van-radio": "@vant/weapp/radio/index",
+    "van-radio-group": "@vant/weapp/radio-group/index"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

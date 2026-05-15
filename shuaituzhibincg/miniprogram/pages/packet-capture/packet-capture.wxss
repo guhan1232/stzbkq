@@ -1,0 +1,246 @@
+.container {
+  padding: 20rpx;
+  background: var(--bg-secondary);
+  min-height: 100vh;
+}
+
+.header {
+  background: var(--gradient-primary);
+  color: white;
+  padding: 30rpx;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.subtitle {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 24rpx;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: var(--primary-500);
+}
+
+.stat-value.number {
+  color: var(--primary-500);
+}
+
+.status-tag {
+  padding: 8rpx 20rpx;
+  border-radius: var(--radius-full);
+  font-size: 24rpx;
+  display: inline-block;
+}
+
+.status-tag.running {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.status-tag.stopped {
+  background: var(--bg-secondary);
+  color: var(--text-disabled);
+}
+
+.control-buttons {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.refresh-bar {
+  margin-bottom: 16rpx;
+}
+
+.btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: var(--radius-md);
+  font-size: 28rpx;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--primary-500);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+}
+
+.btn-refresh {
+  width: 100%;
+  padding: 16rpx;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 26rpx;
+  border: none;
+}
+
+.packet-list {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.list-header {
+  padding: 20rpx;
+  border-bottom: 2rpx solid var(--border-color-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-secondary);
+}
+
+.header-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.live-tag {
+  font-size: 22rpx;
+  color: var(--success);
+  background: var(--success-bg);
+  padding: 6rpx 16rpx;
+  border-radius: var(--radius-md);
+}
+
+.empty-state {
+  padding: 80rpx 40rpx;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: var(--text-disabled);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: var(--text-disabled);
+}
+
+.packet-item {
+  padding: 20rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+}
+
+.packet-item:last-child {
+  border-bottom: none;
+}
+
+.packet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.packet-time {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+.packet-cmdid {
+  font-size: 22rpx;
+  background: var(--primary-500);
+  color: white;
+  padding: 6rpx 16rpx;
+  border-radius: var(--radius-sm);
+}
+
+.packet-info {
+  display: flex;
+  margin-bottom: 8rpx;
+  font-size: 24rpx;
+}
+
+.info-label {
+  color: var(--text-tertiary);
+  min-width: 120rpx;
+}
+
+.info-value {
+  color: var(--text-primary);
+  flex: 1;
+  word-break: break-all;
+}
+
+.packet-data {
+  margin-top: 12rpx;
+  padding: 12rpx;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.data-label {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.data-content {
+  font-size: 22rpx;
+  color: var(--text-primary);
+  line-height: 1.6;
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-height: 200rpx;
+  overflow-y: auto;
+  display: block;
+  font-family: 'Consolas', 'Monaco', monospace;
+}

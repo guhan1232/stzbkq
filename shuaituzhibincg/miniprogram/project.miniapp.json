@@ -1,0 +1,93 @@
+{
+  "miniVersion": "v2",
+  "name": "率土之滨考勤",
+  "version": "2.0.0",
+  "versionCode": 100,
+  "i18nFilePath": "i18n",
+  "mini-ohos": {
+    "sdkVersion": "0.5.1"
+  },
+  "mini-android": {
+    "resourcePath": "miniapp/android/nativeResources",
+    "sdkVersion": "1.6.24",
+    "toolkitVersion": "0.11.0",
+    "useExtendedSdk": {
+      "media": true,
+      "bluetooth": true,
+      "network": true,
+      "scanner": true,
+      "xweb": true,
+      "xwebEmbed": true,
+      "nfc": true,
+      "skyline": true
+    },
+    "icons": {
+      "hdpi": "ic.jpg",
+      "xhdpi": "ic.jpg",
+      "xxhdpi": "ic.jpg",
+      "xxxhdpi": "ic.jpg"
+    },
+    "splashscreen": {
+      "hdpi": "ic.jpg",
+      "xhdpi": "ic.jpg",
+      "xxhdpi": "ic.jpg"
+    },
+    "enableVConsole": "close",
+    "privacy": {
+      "enable": true
+    },
+    "abi": {
+      "armeabi-v7a": true,
+      "arm64-v8a": true
+    },
+    "officialPlugins": {
+      "imPush": {
+        "enable": false
+      }
+    }
+  },
+  "mini-ios": {
+    "sdkVersion": "1.7.0",
+    "toolkitVersion": "0.0.9",
+    "useExtendedSdk": {
+      "WeAppOpenFuns": true,
+      "WeAppNetwork": true,
+      "WeAppBluetooth": false,
+      "WeAppMedia": false,
+      "WeAppLBS": false,
+      "WeAppOthers": false,
+      "WeAppOpenFuns_HasPay": false
+    },
+    "enableVConsole": "open",
+    "icons": {
+      "mainIcon120": "",
+      "mainIcon180": "",
+      "spotlightIcon80": "",
+      "spotlightIcon120": "",
+      "settingsIcon58": "",
+      "settingsIcon87": "",
+      "notificationIcon40": "",
+      "notificationIcon60": "",
+      "appStore1024": ""
+    },
+    "splashScreen": {
+      "customImage": ""
+    },
+    "privacy": {
+      "enable": false
+    },
+    "enableOpenUrlNavigate": true,
+    "gdt": {
+      "splashAd_defaultEnable": false
+    }
+  },
+  "mini-plugin": {
+    "android": [
+      {
+        "open": false,
+        "pluginId": "",
+        "pluginVersion": ""
+      }
+    ]
+  }
+}

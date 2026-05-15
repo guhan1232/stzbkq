@@ -1,0 +1,16 @@
+<!-- 自定义TabBar - 明亮电商风格 -->
+<view class="tabbar">
+  <view
+    wx:for="{{list}}"
+    wx:key="pagePath"
+    class="tabbar-item {{selected === index ? 'active' : ''}}"
+    data-path="{{item.pagePath}}"
+    data-index="{{index}}"
+    bindtap="switchTab"
+  >
+    <view class="tabbar-content">
+      <text class="tabbar-icon">{{item.icon}}</text>
+      <text class="tabbar-text">{{item.text}}</text>
+    </view>
+  </view>
+</view>

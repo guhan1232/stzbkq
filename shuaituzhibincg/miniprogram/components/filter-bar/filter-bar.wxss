@@ -1,0 +1,85 @@
+/* components/filter-bar/filter-bar.wxss */
+.filter-bar {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  margin-bottom: var(--space-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-bar.scrollable {
+  padding: var(--space-sm) 0;
+}
+
+.filter-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.filter-list {
+  display: inline-flex;
+  gap: var(--space-xs);
+  padding: 0 var(--space-sm);
+}
+
+.filter-bar:not(.scrollable) .filter-list {
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+}
+
+.filter-item {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  min-width: 120rpx;
+}
+
+.filter-item:active {
+  transform: scale(0.95);
+}
+
+.filter-item.active {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
+}
+
+.filter-text {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: color var(--transition-base);
+  white-space: nowrap;
+}
+
+.filter-item.active .filter-text {
+  color: white;
+  font-weight: 600;
+}
+
+.filter-indicator {
+  position: absolute;
+  bottom: 4rpx;
+  width: 40rpx;
+  height: 4rpx;
+  border-radius: var(--radius-full);
+  background: white;
+  animation: slideIn var(--transition-base);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}

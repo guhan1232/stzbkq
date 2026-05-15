@@ -1,0 +1,68 @@
+<!--pages/chat-message/chat-message.wxml-->
+<view class="container">
+  <!-- 顶部控制栏 -->
+  <view class="top-bar">
+    <view class="capture-row">
+      <view class="capture-info">
+        <text class="capture-label">724抓取</text>
+        <text class="capture-tag {{captureEnabled ? 'on' : 'off'}}">{{captureEnabled ? 'ON' : 'OFF'}}</text>
+      </view>
+      <view class="action-row">
+        <button class="btn btn-{{captureEnabled ? 'danger' : 'primary'}} btn-xs" bindtap="toggleCapture">
+          {{captureEnabled ? '停止' : '开始'}}
+        </button>
+        <button class="btn btn-ghost btn-xs" bindtap="toggleFilter">筛选</button>
+        <button class="btn btn-ghost btn-xs" bindtap="exportMessages" disabled="{{exporting}}">导出</button>
+        <button class="btn btn-ghost btn-xs btn-danger-text" bindtap="clearMessages">清除</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view wx:if="{{showFilter}}" class="filter-panel">
+    <view class="filter-row">
+      <text class="filter-label">同盟</text>
+      <input class="filter-input" placeholder="同盟名称" value="{{allianceName}}" bindinput="onAllianceInput" confirm-type="search" bindconfirm="onSearch" />
+    </view>
+    <view class="filter-row">
+      <text class="filter-label">玩家</text>
+      <input class="filter-input" placeholder="玩家名称" value="{{playerName}}" bindinput="onPlayerInput" confirm-type="search" bindconfirm="onSearch" />
+    </view>
+    <view class="filter-row">
+      <text class="filter-label">内容</text>
+      <input class="filter-input" placeholder="消息关键词" value="{{contentKeyword}}" bindinput="onContentInput" confirm-type="search" bindconfirm="onSearch" />
+    </view>
+    <view class="filter-btns">
+      <button class="btn btn-primary btn-xs" bindtap="onSearch">搜索</button>
+      <button class="btn btn-ghost btn-xs" bindtap="onResetFilter">重置</button>
+    </view>
+  </view>
+
+  <!-- 消息总数 -->
+  <view class="count-bar">
+    <text class="count-text">共 {{total}} 条消息</text>
+  </view>
+
+  <!-- 消息列表 -->
+  <view class="msg-list">
+    <view wx:if="{{list.length === 0 && !loading}}" class="empty">
+      <text class="empty-icon">💬</text>
+      <text class="empty-text">暂无聊天消息</text>
+      <text class="empty-hint">点击"开始"开启724协议抓取</text>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="msg_id" class="msg-item">
+      <view class="msg-row1">
+        <text class="msg-alliance">{{item.alliance_name}}</text>
+        <text class="msg-player">{{item.player_name}}</text>
+        <text class="msg-time">{{item.timeText}}</text>
+      </view>
+      <view class="msg-row2">
+        <text class="msg-content">{{item.content}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="load-tip">加载中...</view>
+    <view wx:elif="{{!hasMore && list.length > 0}}" class="load-tip">没有更多了</view>
+  </view>
+</view>

@@ -1,0 +1,73 @@
+<view 
+  class="hero-card {{mode}}"
+  bindtap="onTap"
+>
+  <!-- 武将头像 -->
+  <view class="hero-avatar-section">
+    <image 
+      wx:if="{{hero.avatar && !avatarError}}"
+      class="hero-avatar"
+      src="{{hero.avatar}}"
+      mode="aspectFill"
+      binderror="onAvatarError"
+    />
+    <view wx:else class="hero-avatar-placeholder">
+      <text>{{heroNameFirstChar}}</text>
+    </view>
+    
+    <!-- 星级 -->
+    <view class="hero-stars" wx:if="{{starIcons.length > 0}}">
+      <text wx:for="{{starIcons}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 武将信息 -->
+  <view class="hero-info">
+    <!-- 姓名和阵营 -->
+    <view class="info-header">
+      <text class="hero-name">{{hero.name || '未知武将'}}</text>
+      <view class="faction-badge" wx:if="{{hero.faction}}">
+        <text>{{hero.faction}}</text>
+      </view>
+    </view>
+
+    <!-- 兵种和等级 -->
+    <view class="info-details">
+      <text class="detail-item" wx:if="{{hero.troopType}}">⚔️ {{hero.troopType}}</text>
+      <text class="detail-item" wx:if="{{hero.level}}">Lv.{{hero.level}}</text>
+    </view>
+
+    <!-- 属性面板 -->
+    <view class="hero-attributes" wx:if="{{mode === 'detailed'}}">
+      <view class="attr-item" wx:if="{{hero.force !== undefined}}">
+        <text class="attr-label">武力</text>
+        <text class="attr-value">{{hero.force}}</text>
+      </view>
+      <view class="attr-item" wx:if="{{hero.intelligence !== undefined}}">
+        <text class="attr-label">谋略</text>
+        <text class="attr-value">{{hero.intelligence}}</text>
+      </view>
+      <view class="attr-item" wx:if="{{hero.defense !== undefined}}">
+        <text class="attr-label">防御</text>
+        <text class="attr-value">{{hero.defense}}</text>
+      </view>
+      <view class="attr-item" wx:if="{{hero.speed !== undefined}}">
+        <text class="attr-label">速度</text>
+        <text class="attr-value">{{hero.speed}}</text>
+      </view>
+    </view>
+
+    <!-- 技能列表 -->
+    <view class="hero-skills" wx:if="{{showSkills && hero.skills && hero.skills.length > 0}}">
+      <view class="skill-tag" wx:for="{{hero.skills}}" wx:key="index">
+        <text>{{item.name || item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 战斗力评分 -->
+  <view class="hero-power" wx:if="{{hero.power !== undefined}}">
+    <text class="power-label">战力</text>
+    <text class="power-value">{{hero.power}}</text>
+  </view>
+</view>
